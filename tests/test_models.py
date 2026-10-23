@@ -53,11 +53,116 @@ def test_session_and_talk_matching():
     assert session.is_ongoing(719) is True
     assert session.is_ongoing(720) is False
 
+    # プロパティ検証
+    assert session.duration_minutes == 120
+    assert session.primary_speaker_names == "高橋 昂"
+
+    # talksが空の場合のprimary_speaker_names
+    empty_session = Session(
+        session_id="empty-1",
+        day="2026-10-27",
+        day_label="Day 2",
+        title="休憩",
+        track=track,
+        category="general",
+        start_time="12:00",
+        end_time="13:00",
+        start_minutes=720,
+        end_minutes=780,
+    )
+    assert empty_session.primary_speaker_names == ""
+
     # キーワード判定
+    assert session.matches_keyword("") is True
     assert session.matches_keyword("物理学") is True
-    assert session.matches_keyword("高橋") is True
-    assert session.matches_keyword("メインホール") is True
+    assert session.matches_keyword("今泉") is True  # organizer
+    assert session.matches_keyword("高橋") is True  # speaker
+    assert session.matches_keyword("レプリカ") is True  # talk abstract
+    assert session.matches_keyword("Statistical Physics") is True  # talk tag
+    assert session.matches_keyword("メインホール") is True  # track name
+    assert session.matches_keyword("Track A") is True  # track code
     assert session.matches_keyword("存在しない単語") is False
+
+
+def test_day_schedule_current_time_block():
+    """DaySchedule における現在進行中タイムブロックの特定と境界値検証"""
+    from domain.models import DaySchedule
+
+    track_a = Track(code="Track A", name="メインホール", sort_order=1)
+    s1 = Session(
+        session_id="s1",
+        day="2026-10-27",
+        day_label="Day 2",
+        title="午前セッション",
+        track=track_a,
+        category="os",
+        start_time="10:00",
+        end_time="12:00",
+        start_minutes=600,
+        end_minutes=720,
+    )
+    s2 = Session(
+        session_id="s2",
+        day="2026-10-27",
+        day_label="Day 2",
+        title="午後セッション",
+        track=track_a,
+        category="os",
+        start_time="13:30",
+        end_time="15:30",
+        start_minutes=810,
+        end_minutes=930,
+    )
+
+    tb1 = TimeBlock(
+        start_time="10:00",
+        end_time="12:00",
+        start_minutes=600,
+        end_minutes=720,
+        sessions=[s1],
+    )
+    tb2 = TimeBlock(
+        start_time="13:30",
+        end_time="15:30",
+        start_minutes=810,
+        end_minutes=930,
+        sessions=[s2],
+    )
+
+    day_schedule = DaySchedule(date="2026-10-27", label="Day 2", time_blocks=[tb1, tb2])
+
+    assert len(day_schedule.time_blocks) == 2
+
+    # 開始前 (09:59 = 599分) -> None
+    assert day_schedule.ongoing_block(599) is None
+
+    # 午前セッション中 (10:00 = 600分, 11:30 = 690分, 11:59 = 719分) -> 第1ブロック
+    b1 = day_schedule.ongoing_block(600)
+    assert b1 is not None
+    assert b1.start_time == "10:00"
+
+    b1_mid = day_schedule.ongoing_block(690)
+    assert b1_mid is not None
+    assert b1_mid.start_time == "10:00"
+
+    # 昼休み中 (12:00 = 720分, 12:45 = 765分, 13:29 = 809分) -> None
+    assert day_schedule.ongoing_block(720) is None
+    assert day_schedule.ongoing_block(765) is None
+    assert day_schedule.ongoing_block(809) is None
+
+    # 午後セッション中 (13:30 = 810分) -> 第2ブロック
+    b2 = day_schedule.ongoing_block(810)
+    assert b2 is not None
+    assert b2.start_time == "13:30"
+
+    # 終了後 (15:30 = 930分, 16:00 = 960分) -> None
+    assert day_schedule.ongoing_block(930) is None
+    assert day_schedule.ongoing_block(960) is None
+
+    # 空のDaySchedule
+    empty_day = DaySchedule(date="2026-10-27", label="Empty Day", time_blocks=[])
+    assert empty_day.time_blocks == []
+    assert empty_day.ongoing_block(600) is None
 
 
 def test_time_block_first_class_collection():

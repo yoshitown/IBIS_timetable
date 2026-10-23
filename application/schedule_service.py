@@ -28,9 +28,27 @@ class ScheduleService:
             self._cached_sessions = self.repository.load_all_sessions()
         return self._cached_sessions
 
+    def get_all_sessions(self) -> List[Session]:
+        """全日程のセッション一覧を取得（キャッシュ利用）"""
+        return self._get_all_sessions()
+
     def get_days(self) -> List[Dict[str, str]]:
         """カンファレンスの日程一覧を取得"""
         return self.repository.load_days()
+
+    def filter_sessions(
+        self,
+        day: Optional[str] = None,
+        category: Optional[str] = None,
+        keyword: Optional[str] = None,
+    ) -> List[Session]:
+        """条件に基づくセッション一覧の抽出・絞り込み"""
+        return FilterPolicy.apply(
+            sessions=self._get_all_sessions(),
+            day=day,
+            category=category,
+            keyword=keyword,
+        )
 
     def get_day_schedule(
         self,
