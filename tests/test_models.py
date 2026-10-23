@@ -1,9 +1,17 @@
 """
 ドメインモデルおよびポリシー層の単体テスト
+設計原則: 貧血ドメインモデル回避、ファーストクラスコレクション、値オブジェクトの検証
 """
 
-from domain.models import Session, Speaker, Talk
-from domain.policies import FilterPolicy, TimePolicy
+from domain.models import Session, Speaker, Talk, TimeBlock, Track
+from domain.policies import TimePolicy
+
+
+def test_track_value_object():
+    t1 = Track(code="Track A", name="メインホール (2F)", sort_order=1)
+    t2 = Track(code="Track B", name="国際会議室 (3F)", sort_order=2)
+    assert t1.full_label == "Track A: メインホール (2F)"
+    assert t1.sort_order < t2.sort_order
 
 
 def test_time_policy():
@@ -13,14 +21,7 @@ def test_time_policy():
     assert TimePolicy.minutes_to_time_str(870) == "14:30"
 
 
-def test_speaker_matching():
-    speaker = Speaker(name="今泉 允聡", affiliation="東京大学")
-    assert speaker.matches("今泉") is True
-    assert speaker.matches("東京大学") is True
-    assert speaker.matches("京都") is False
-
-
-def test_session_ongoing_and_matching():
+def test_session_and_talk_matching():
     speaker = Speaker(name="高橋 昂", affiliation="東京大学")
     talk = Talk(
         title="レプリカ解析による学習の理解",
@@ -30,12 +31,13 @@ def test_session_ongoing_and_matching():
         abstract="統計力学のレプリカ法を用いた擬似ラベル解析。",
         tags=["Replica", "Statistical Physics"],
     )
+    track = Track(code="Track A", name="メインホール (2F)", sort_order=1)
     session = Session(
         session_id="os-1",
         day="2026-10-27",
-        day_label="Day 2: Oct 27 (Tue)",
+        day_label="Day 2: 10/27 (火)",
         title="企画セッション1: 物理学と機械学習理論",
-        track="Main Hall",
+        track=track,
         category="os",
         start_time="10:00",
         end_time="12:00",
@@ -45,56 +47,58 @@ def test_session_ongoing_and_matching():
         talks=[talk],
     )
 
-    # 進行中判定 (10:00〜12:00)
+    # 外部からの時刻値注入による進行中判定
     assert session.is_ongoing(599) is False
     assert session.is_ongoing(600) is True
-    assert session.is_ongoing(700) is True
+    assert session.is_ongoing(719) is True
     assert session.is_ongoing(720) is False
 
-    # キーワードマッチング
+    # キーワード判定
     assert session.matches_keyword("物理学") is True
     assert session.matches_keyword("高橋") is True
-    assert session.matches_keyword("レプリカ") is True
-    assert session.matches_keyword("存在しないキーワード") is False
+    assert session.matches_keyword("メインホール") is True
+    assert session.matches_keyword("存在しない単語") is False
 
 
-def test_filter_policy():
+def test_time_block_first_class_collection():
+    track_a = Track(code="Track A", name="メインホール", sort_order=1)
+    track_b = Track(code="Track B", name="国際会議室", sort_order=2)
+
     s1 = Session(
         session_id="s1",
-        day="2026-10-26",
-        day_label="Day 1",
-        title="チュートリアル1",
-        track="Main Hall",
-        category="tutorial",
-        start_time="11:00",
-        end_time="12:30",
-        start_minutes=660,
-        end_minutes=750,
+        day="2026-10-27",
+        day_label="Day 2",
+        title="OS1",
+        track=track_a,
+        category="os",
+        start_time="10:00",
+        end_time="12:00",
+        start_minutes=600,
+        end_minutes=720,
     )
     s2 = Session(
         session_id="s2",
         day="2026-10-27",
         day_label="Day 2",
-        title="招待講演1",
-        track="Main Hall",
-        category="invited",
-        start_time="14:00",
-        end_time="15:00",
-        start_minutes=840,
-        end_minutes=900,
+        title="Tutorial B",
+        track=track_b,
+        category="tutorial",
+        start_time="10:00",
+        end_time="12:00",
+        start_minutes=600,
+        end_minutes=720,
     )
-    sessions = [s1, s2]
 
-    # 日付フィルタ
-    day1_res = FilterPolicy.apply(sessions, day="2026-10-26")
-    assert len(day1_res) == 1
-    assert day1_res[0].session_id == "s1"
+    block = TimeBlock(
+        start_time="10:00",
+        end_time="12:00",
+        start_minutes=600,
+        end_minutes=720,
+        sessions=[s1, s2],
+    )
 
-    # カテゴリフィルタ
-    invited_res = FilterPolicy.apply(sessions, category="invited")
-    assert len(invited_res) == 1
-    assert invited_res[0].session_id == "s2"
-
-    # All指定
-    all_res = FilterPolicy.apply(sessions, category="all")
-    assert len(all_res) == 2
+    assert block.parallel_count == 2
+    assert block.is_ongoing(650) is True
+    assert block.is_ongoing(750) is False
+    # ソート順序の維持
+    assert block.sessions[0].track.sort_order < block.sessions[1].track.sort_order

@@ -6,34 +6,38 @@
       "id": "day-1",
       "date": "2026-10-26",
       "label": "Day 1: Oct 26 (Mon)",
-      "title": "Tutorials"
+      "title": "チュートリアルデー"
     },
     {
       "id": "day-2",
       "date": "2026-10-27",
       "label": "Day 2: Oct 27 (Tue)",
-      "title": "Workshop Day 1"
+      "title": "ワークショップ1日目 (並行3トラック)"
     },
     {
       "id": "day-3",
       "date": "2026-10-28",
       "label": "Day 3: Oct 28 (Wed)",
-      "title": "Workshop Day 2 (International Day)"
+      "title": "ワークショップ2日目 (International Day)"
     },
     {
       "id": "day-4",
       "date": "2026-10-29",
       "label": "Day 4: Oct 29 (Thu)",
-      "title": "Workshop Day 3"
+      "title": "ワークショップ3日目 (並行3トラック)"
     }
   ],
   "sessions": [
     {
-      "session_id": "tut-1",
+      "session_id": "d1-tut-1",
       "day": "2026-10-26",
-      "day_label": "Day 1: Oct 26 (Mon)",
+      "day_label": "Day 1: 10/26 (月)",
       "title": "チュートリアル1: Physical AI",
-      "track": "Main Hall (2F)",
+      "track": {
+        "code": "Track A",
+        "name": "メインホール (2F)",
+        "sort_order": 1
+      },
       "category": "tutorial",
       "start_time": "11:00",
       "end_time": "12:30",
@@ -54,16 +58,24 @@
             "Robotics",
             "World Model",
             "Foundation Models"
+          ],
+          "citations": [
+            "OpenAI GPT-6 Astra Technical Report, 2026.",
+            "SayCan: Grounding Language in Robotic Affordances, 2022."
           ]
         }
       ]
     },
     {
-      "session_id": "tut-2",
+      "session_id": "d1-tut-2",
       "day": "2026-10-26",
-      "day_label": "Day 1: Oct 26 (Mon)",
+      "day_label": "Day 1: 10/26 (月)",
       "title": "チュートリアル2: AI for Scienceにおける機械学習の実践",
-      "track": "Main Hall (2F)",
+      "track": {
+        "code": "Track A",
+        "name": "メインホール (2F)",
+        "sort_order": 1
+      },
       "category": "tutorial",
       "start_time": "13:30",
       "end_time": "15:00",
@@ -82,18 +94,59 @@
           "tags": [
             "AI for Science",
             "OOD",
-            "Uncertainty",
-            "Small Data"
+            "Uncertainty Quantification",
+            "Experimental Design"
+          ],
+          "citations": [
+            "Rashomon Effect in Small Data Science, JMLR 2025."
           ]
         }
       ]
     },
     {
-      "session_id": "tut-3",
+      "session_id": "d1-tut-2-hands",
       "day": "2026-10-26",
-      "day_label": "Day 1: Oct 26 (Mon)",
+      "day_label": "Day 1: 10/26 (月)",
+      "title": "AI for Science データ解析環境構築ハンズオン",
+      "track": {
+        "code": "Track B",
+        "name": "国際会議室 (3F)",
+        "sort_order": 2
+      },
+      "category": "tutorial",
+      "start_time": "13:30",
+      "end_time": "15:00",
+      "organizer": "チュートリアル実行委員会",
+      "abstract": "小規模科学データに対するガウス過程回帰、ベイズ最適化、不確実性推定ライブラリのハンズオン演習。持ち込みPCにてColab環境で実習を行います。",
+      "talks": [
+        {
+          "title": "科学データ向けPythonエコシステムハンズオン実習",
+          "speaker": {
+            "name": "ハンズオンTAチーム",
+            "affiliation": "東京大学・理研AIP"
+          },
+          "start_time": "13:30",
+          "end_time": "15:00",
+          "abstract": "Jupyter/Colabを用いた材料探索データセットの実データ解析ハンズオン。",
+          "tags": [
+            "Hands-on",
+            "Python",
+            "Colab",
+            "Bayesian Optimization"
+          ]
+        }
+      ]
+    },
+    {
+      "session_id": "d1-tut-3",
+      "day": "2026-10-26",
+      "day_label": "Day 1: 10/26 (月)",
       "title": "チュートリアル3: 現代AI入門: 大規模言語モデルから思考するシステムへ",
-      "track": "Main Hall (2F)",
+      "track": {
+        "code": "Track A",
+        "name": "メインホール (2F)",
+        "sort_order": 1
+      },
       "category": "tutorial",
       "start_time": "15:30",
       "end_time": "17:00",
@@ -114,16 +167,23 @@
             "Reasoning",
             "Test-Time Scaling",
             "RSI"
+          ],
+          "citations": [
+            "System 2 Reasoning in Language Models, 2025."
           ]
         }
       ]
     },
     {
-      "session_id": "tut-4",
+      "session_id": "d1-tut-4",
       "day": "2026-10-26",
-      "day_label": "Day 1: Oct 26 (Mon)",
+      "day_label": "Day 1: 10/26 (月)",
       "title": "チュートリアル4: オンライン凸最適化の基礎とゲーム理論への応用",
-      "track": "Main Hall (2F)",
+      "track": {
+        "code": "Track A",
+        "name": "メインホール (2F)",
+        "sort_order": 1
+      },
       "category": "tutorial",
       "start_time": "17:30",
       "end_time": "19:00",
@@ -142,35 +202,48 @@
           "tags": [
             "Optimization",
             "Game Theory",
-            "Online Learning"
+            "Online Learning",
+            "Adam",
+            "Muon"
+          ],
+          "citations": [
+            "No-regret Dynamics in Multi-agent Learning, 2024."
           ]
         }
       ]
     },
     {
-      "session_id": "open-2",
+      "session_id": "d2-open",
       "day": "2026-10-27",
-      "day_label": "Day 2: Oct 27 (Tue)",
-      "title": "Opening Remarks (オープニング)",
-      "track": "Main Hall (2F)",
+      "day_label": "Day 2: 10/27 (火)",
+      "title": "オープニング & 連絡事項",
+      "track": {
+        "code": "Track A",
+        "name": "メインホール (2F)",
+        "sort_order": 1
+      },
       "category": "general",
-      "start_time": "09:50",
-      "end_time": "10:00",
+      "start_time": "09:15",
+      "end_time": "09:45",
       "organizer": "IBIS Steering Committee",
-      "abstract": "第29回情報論的学習理論ワークショップ 開会のご挨拶",
+      "abstract": "第29回情報論的学習理論ワークショップ 開会挨拶、運営ガイドライン、WiFi・Slido接続手順のご案内。",
       "talks": []
     },
     {
-      "session_id": "os-1",
+      "session_id": "d2-os-1",
       "day": "2026-10-27",
-      "day_label": "Day 2: Oct 27 (Tue)",
+      "day_label": "Day 2: 10/27 (火)",
       "title": "企画セッション1: 物理学と機械学習理論",
-      "track": "Main Hall (2F)",
+      "track": {
+        "code": "Track A",
+        "name": "メインホール (2F)",
+        "sort_order": 1
+      },
       "category": "os",
       "start_time": "10:00",
       "end_time": "12:00",
       "organizer": "今泉 允聡 (東京大学・京都大学・理研AIP)",
-      "abstract": "機械学習における学習・推論のダイナミクスや統計物理学的アプローチ、レプリカ解析、拡散モデルと量子力学の融合理論について最前線を議論する。",
+      "abstract": "統計物理学と深層学習の双対性、平均場理論を用いた過剰パラメータ化モデルの大域的収束解析、および拡散モデルと量子力学の融合理論について最前線を議論する。",
       "talks": [
         {
           "title": "訓練済モデルからの学習のレプリカ解析",
@@ -184,7 +257,11 @@
           "tags": [
             "Replica Method",
             "Statistical Physics",
-            "Distillation"
+            "Self-Distillation"
+          ],
+          "citations": [
+            "K. Takanami, T. Takahashi, A. Sakata, NeurIPS 2025.",
+            "T. Takahashi, JMLR 2026."
           ]
         },
         {
@@ -199,7 +276,8 @@
           "tags": [
             "Dynamics",
             "Generalization",
-            "DMFT"
+            "DMFT",
+            "Tensor Programs"
           ]
         },
         {
@@ -212,9 +290,9 @@
           "end_time": "11:30",
           "abstract": "統計力学的なモデリングや理論解析はニューラルネットワーク研究のひとつの基盤として機能してきたアプローチで, 深層学習においても大規模極限の挙動や普遍性の理解につながってきた. たとえば順方向ランダム神経回路モデルの統計神経力学がその例である. 一方で, 現代のAIシステムは自己注意機構や拡散モデルなど古典的枠組みにとらわれない要素もある. この注意機構と拡散モデルの両者については近年, ランダムエネルギー模型およびHopfield模型のエネルギー関数の数理構造との類似が見え隠れしており, 議論が進んでいる. 本講演では, 自己注意機構における長コンテキスト極限での適切な逆温度スケーリング, 拡散モデルの知識忘却を検出するエネルギー関数の話題に触れながら, こうした統計力学的なモデリングと解析の展開を紹介する.",
           "tags": [
-            "Hopfield",
-            "Attention",
-            "Statistical Mechanics"
+            "Statistical Mechanics",
+            "Self-Attention",
+            "Hopfield Model"
           ]
         },
         {
@@ -229,28 +307,118 @@
           "tags": [
             "Diffusion Models",
             "Quantum Mechanics",
-            "Path Integral"
+            "Path Integral",
+            "WKB"
           ]
         }
       ]
     },
     {
-      "session_id": "inv-1",
+      "session_id": "d2-tut-causal",
       "day": "2026-10-27",
-      "day_label": "Day 2: Oct 27 (Tue)",
+      "day_label": "Day 2: 10/27 (火)",
+      "title": "ハンズオンチュートリアル: 科学的発見のための因果推論",
+      "track": {
+        "code": "Track B",
+        "name": "国際会議室 (3F)",
+        "sort_order": 2
+      },
+      "category": "tutorial",
+      "start_time": "10:00",
+      "end_time": "12:00",
+      "organizer": "清水 昌平 (滋賀大学 / 理研AIP) ほか",
+      "abstract": "LiNGAMモデルと最新の潜在交絡変数対応アルゴリズムを用いた因果構造探索のハンズオン。Colabノートブックを配布し、実データへの適用手順を解説します。",
+      "talks": [
+        {
+          "title": "非ガウス構造方程式モデルによる因果探索と実習",
+          "speaker": {
+            "name": "清水 昌平",
+            "affiliation": "滋賀大学・理研AIP"
+          },
+          "start_time": "10:00",
+          "end_time": "12:00",
+          "abstract": "統計的因果探索の基礎概念から、潜在変数が存在する高次元データにおける識別可能性定理、Pythonツールによる実践までを網羅。",
+          "tags": [
+            "Causal Inference",
+            "LiNGAM",
+            "Structural Equation",
+            "Hands-on"
+          ]
+        }
+      ]
+    },
+    {
+      "session_id": "d2-preview-poster",
+      "day": "2026-10-27",
+      "day_label": "Day 2: 10/27 (火)",
+      "title": "プレビュー展示: 午後ポスターセッション事前閲覧 & 企業ブース",
+      "track": {
+        "code": "Track C",
+        "name": "市民ギャラリー (1F)",
+        "sort_order": 3
+      },
+      "category": "poster",
+      "start_time": "10:00",
+      "end_time": "12:00",
+      "organizer": "ポスター委員会 / スポンサー委員会",
+      "abstract": "午後に実施されるポスターセッション1 (P1-01〜P1-68) の先行掲示およびゴールドスポンサー各社による先端技術ブース展示。",
+      "talks": []
+    },
+    {
+      "session_id": "d2-lunch",
+      "day": "2026-10-27",
+      "day_label": "Day 2: 10/27 (火)",
+      "title": "ランチ休憩 & 企業スポンサー展示 (お弁当配布)",
+      "track": {
+        "code": "Track A",
+        "name": "メインホール / ホワイエ",
+        "sort_order": 1
+      },
+      "category": "general",
+      "start_time": "12:00",
+      "end_time": "13:30",
+      "organizer": "実行委員会",
+      "abstract": "ホワイエ(2F)にてお弁当配布。カフェテリアおよびホワイエでのネットワーキング。",
+      "talks": []
+    },
+    {
+      "session_id": "d2-flash-talk",
+      "day": "2026-10-27",
+      "day_label": "Day 2: 10/27 (火)",
+      "title": "ポスターフラッシュトーク (60秒×30件)",
+      "track": {
+        "code": "Track C",
+        "name": "市民ギャラリー (1F)",
+        "sort_order": 3
+      },
+      "category": "poster",
+      "start_time": "13:30",
+      "end_time": "14:00",
+      "organizer": "ポスター委員会",
+      "abstract": "若手研究者・学生発表者によるポスターハイライト連続プレゼンテーション (P1-01〜P1-30)。",
+      "talks": []
+    },
+    {
+      "session_id": "d2-inv-1",
+      "day": "2026-10-27",
+      "day_label": "Day 2: 10/27 (火)",
       "title": "招待講演1: Christopher Rackauckas (MIT)",
-      "track": "Main Hall (2F)",
+      "track": {
+        "code": "Track A",
+        "name": "メインホール (2F)",
+        "sort_order": 1
+      },
       "category": "invited",
       "start_time": "14:00",
       "end_time": "15:00",
-      "organizer": "IBIS Programme Committee",
+      "organizer": "座長: 杉山 将 (理研AIP / 東京大学)",
       "abstract": "Techniques such as universal differential equations allow for embedding neural networks into physical models in order to learn the missing physics from data. However, how do you know if you have enough data? This question has mostly been address empirically, with practitioners of SciML doing a “guess and check” approach by training neural networks and seeing what happens. But is there a more principled way? This talk with reveal a mathematical theory that answers the question, “do I have enough data to uniquely know the physics?”, and showcases new computational tools in the Julia SciML ecosystem that makes concrete whether the learned solutions can be trusted.",
       "talks": [
         {
           "title": "Do I have enough data for SciML? The math of functional identifiability",
           "speaker": {
             "name": "Christopher Rackauckas",
-            "affiliation": "MIT"
+            "affiliation": "Massachusetts Institute of Technology (MIT)"
           },
           "start_time": "14:00",
           "end_time": "15:00",
@@ -259,30 +427,91 @@
             "SciML",
             "Differential Equations",
             "Identifiability",
-            "Keynote"
+            "Julia"
+          ],
+          "citations": [
+            "Universal Differential Equations for Scientific Machine Learning, 2020."
           ]
         }
       ]
     },
     {
-      "session_id": "poster-1",
+      "session_id": "d2-os-math",
       "day": "2026-10-27",
-      "day_label": "Day 2: Oct 27 (Tue)",
+      "day_label": "Day 2: 10/27 (火)",
+      "title": "OS2 (特別セッション): 統計的機械学習の数理解析",
+      "track": {
+        "code": "Track A",
+        "name": "メインホール (2F)",
+        "sort_order": 1
+      },
+      "category": "os",
+      "start_time": "15:15",
+      "end_time": "16:45",
+      "organizer": "数理統計ワーキンググループ",
+      "abstract": "正則化理論、情報幾何、高次元データ解析における未解決幾何問題への数理的アプローチを掘り下げる。",
+      "talks": [
+        {
+          "title": "過剰適合領域における正則化パスの幾何構造",
+          "speaker": {
+            "name": "数理班 招待講演者",
+            "affiliation": "統計数理研究所"
+          },
+          "start_time": "15:15",
+          "end_time": "16:00",
+          "abstract": "高次元線形回帰およびカーネル法における最小ノルム補間解の漸近分布解析。",
+          "tags": [
+            "Information Geometry",
+            "High-Dimensional Statistics",
+            "Regularization"
+          ]
+        }
+      ]
+    },
+    {
+      "session_id": "d2-wg-geom",
+      "day": "2026-10-27",
+      "day_label": "Day 2: 10/27 (火)",
+      "title": "ワーキンググループ: Geometric Deep Learning",
+      "track": {
+        "code": "Track B",
+        "name": "国際会議室 (3F)",
+        "sort_order": 2
+      },
+      "category": "os",
+      "start_time": "15:15",
+      "end_time": "16:45",
+      "organizer": "幾何学的深層学習研究会",
+      "abstract": "リーマン多様体、等変ニューラルネットワーク、グラフ表現学習に関するオープンディスカッション。",
+      "talks": []
+    },
+    {
+      "session_id": "d2-poster-1",
+      "day": "2026-10-27",
+      "day_label": "Day 2: 10/27 (火)",
       "title": "ポスターセッション1 (P1-01〜P1-68)",
-      "track": "Civic Gallery (B1F)",
+      "track": {
+        "code": "Track C",
+        "name": "市民ギャラリー (1F)",
+        "sort_order": 3
+      },
       "category": "poster",
       "start_time": "16:00",
       "end_time": "19:00",
       "organizer": "ポスター委員会",
-      "abstract": "コアタイム前半 (奇数番号): 16:00-17:30 / コアタイム後半 (偶数番号): 17:30-19:00。理論・応用・萌芽的研究のポスター発表。",
+      "abstract": "コアタイム前半 (奇数番号): 16:00-17:30 / コアタイム後半 (偶数番号): 17:30-19:00。理論・応用・萌芽的機械学習研究のポスター発表。",
       "talks": []
     },
     {
-      "session_id": "os-2",
+      "session_id": "d3-os-2",
       "day": "2026-10-28",
-      "day_label": "Day 3: Oct 28 (Wed)",
+      "day_label": "Day 3: 10/28 (水)",
       "title": "企画セッション2: Neuro-symbolic AI",
-      "track": "Main Hall (2F)",
+      "track": {
+        "code": "Track A",
+        "name": "メインホール (2F)",
+        "sort_order": 1
+      },
       "category": "os",
       "start_time": "09:30",
       "end_time": "11:30",
@@ -293,7 +522,7 @@
           "title": "Neuro-Symbolic Agents: Reason, Act, and Learn—From Multiobject Worlds to AI for Science",
           "speaker": {
             "name": "新藤 光",
-            "affiliation": "SB Intuitions"
+            "affiliation": "SB Intuitions株式会社"
           },
           "start_time": "09:30",
           "end_time": "10:10",
@@ -301,7 +530,8 @@
           "tags": [
             "Neuro-Symbolic",
             "Agents",
-            "Reasoning"
+            "Reasoning",
+            "Multi-object"
           ]
         },
         {
@@ -314,9 +544,10 @@
           "end_time": "10:50",
           "abstract": "Symbolic solvers are powerful tools for reasoning over logical rules and constraints, but their discrete nature makes them difficult to integrate directly into neural systems. We address this limitation by using fuzzy logic operators that extend Boolean operations to continuous values. Combined with neural networks, these operators allow us to construct differentiable solvers for symbolic problems. Our work explores this approach in the context of Maximum Satisfiability and Answer Set Programming. Beyond symbolic problem solving, we apply these ideas to integrate logical rules and constraints into neural models for various tasks, extending the use of differentiable solving beyond symbolic problems to tasks involving real-world data.",
           "tags": [
-            "Differentiable Solver",
+            "Differentiable Solving",
             "SAT",
-            "Logic"
+            "ASP",
+            "Fuzzy Logic"
           ]
         },
         {
@@ -331,22 +562,61 @@
           "tags": [
             "Transformers",
             "Logic",
-            "Rule Induction"
+            "Rule Induction",
+            "Boolean Formulas"
           ]
         }
       ]
     },
     {
-      "session_id": "inv-2",
+      "session_id": "d3-intl-session",
       "day": "2026-10-28",
-      "day_label": "Day 3: Oct 28 (Wed)",
-      "title": "招待講演2: Niclas Boehmer (HPI)",
-      "track": "Main Hall (2F)",
+      "day_label": "Day 3: 10/28 (水)",
+      "title": "International Session: Symbolic Reasoning & Logic in LLMs",
+      "track": {
+        "code": "Track B",
+        "name": "国際会議室 (3F)",
+        "sort_order": 2
+      },
+      "category": "os",
+      "start_time": "09:30",
+      "end_time": "11:30",
+      "organizer": "International Program Committee",
+      "abstract": "English session featuring invited international researchers discussing logical verification and formal methods inside large language models.",
+      "talks": []
+    },
+    {
+      "session_id": "d3-booth",
+      "day": "2026-10-28",
+      "day_label": "Day 3: 10/28 (水)",
+      "title": "企業技術ブース展示 & リクルーティングセッション",
+      "track": {
+        "code": "Track C",
+        "name": "市民ギャラリー (1F)",
+        "sort_order": 3
+      },
+      "category": "general",
+      "start_time": "09:30",
+      "end_time": "11:30",
+      "organizer": "産学連携委員会",
+      "abstract": "スポンサー企業による最先端機械学習インフラ・自社プロダクトのデモ展示および研究職キャリア相談会。",
+      "talks": []
+    },
+    {
+      "session_id": "d3-inv-2",
+      "day": "2026-10-28",
+      "day_label": "Day 3: 10/28 (水)",
+      "title": "招待講演2: Niclas Boehmer (Hasso Plattner Institute)",
+      "track": {
+        "code": "Track A",
+        "name": "メインホール (2F)",
+        "sort_order": 1
+      },
       "category": "invited",
       "start_time": "11:30",
       "end_time": "12:30",
       "organizer": "IBIS Programme Committee",
-      "abstract": "Computational Social Choice and Algorithms in Modern Decision Systems.",
+      "abstract": "Computational Social Choice meets modern machine learning.",
       "talks": [
         {
           "title": "Computational Social Choice, Preference Learning, and AI Decision Systems",
@@ -356,21 +626,43 @@
           },
           "start_time": "11:30",
           "end_time": "12:30",
-          "abstract": "Computational social choice meets modern machine learning.",
+          "abstract": "Algorithms and complexity in collective decision making, voting systems, and multi-agent resource allocation.",
           "tags": [
             "Social Choice",
-            "Game Theory",
+            "Preference Learning",
+            "Algorithms",
             "Keynote"
           ]
         }
       ]
     },
     {
-      "session_id": "poster-2",
+      "session_id": "d3-phd-session",
       "day": "2026-10-28",
-      "day_label": "Day 3: Oct 28 (Wed)",
+      "day_label": "Day 3: 10/28 (水)",
+      "title": "社会人博士合同説明会 @大ホール",
+      "track": {
+        "code": "Track A",
+        "name": "メインホール (2F)",
+        "sort_order": 1
+      },
+      "category": "general",
+      "start_time": "12:30",
+      "end_time": "14:30",
+      "organizer": "企画委員会",
+      "abstract": "社会人博士課程の制度、受け入れ大学・研究室の紹介、修了生の体験談パネルディスカッション。ランチタイムに開催。",
+      "talks": []
+    },
+    {
+      "session_id": "d3-poster-2",
+      "day": "2026-10-28",
+      "day_label": "Day 3: 10/28 (水)",
       "title": "ポスターセッション2 (P2-01〜P2-68)",
-      "track": "Civic Gallery (B1F)",
+      "track": {
+        "code": "Track C",
+        "name": "市民ギャラリー (1F)",
+        "sort_order": 3
+      },
       "category": "poster",
       "start_time": "14:30",
       "end_time": "17:30",
@@ -379,16 +671,37 @@
       "talks": []
     },
     {
-      "session_id": "os-3",
+      "session_id": "d3-reception",
+      "day": "2026-10-28",
+      "day_label": "Day 3: 10/28 (水)",
+      "title": "懇親会 (Reception Banquet)",
+      "track": {
+        "code": "Track A",
+        "name": "パレスホテル大宮 (別会場)",
+        "sort_order": 1
+      },
+      "category": "general",
+      "start_time": "18:30",
+      "end_time": "20:30",
+      "organizer": "現地実行委員会",
+      "abstract": "参加者同士の研究交流・ネットワーキング懇親会。",
+      "talks": []
+    },
+    {
+      "session_id": "d4-os-3",
       "day": "2026-10-29",
-      "day_label": "Day 4: Oct 29 (Thu)",
+      "day_label": "Day 4: 10/29 (木)",
       "title": "企画セッション3: 最適化の理論と実践の最前線",
-      "track": "Main Hall (2F)",
+      "track": {
+        "code": "Track A",
+        "name": "メインホール (2F)",
+        "sort_order": 1
+      },
       "category": "os",
       "start_time": "09:30",
       "end_time": "11:30",
       "organizer": "包 含 (統計数理研究所・東北大学・理研AIP)",
-      "abstract": "問題パラメータへの適応技法、分散学習通信削減、LLM事前学習の安定化など、最適化研究の最先端を集結。",
+      "abstract": "問題パラメータへの自動適応技法、分散学習における通信削減、大規模言語モデル事前学習の安定化など、最適化研究の最前線。",
       "talks": [
         {
           "title": "一次法における問題パラメータへの自動適応技法",
@@ -402,7 +715,7 @@
           "tags": [
             "Optimization",
             "First-order Methods",
-            "Adaptive"
+            "Adaptive Step-size"
           ]
         },
         {
@@ -416,8 +729,8 @@
           "abstract": "分散学習は、学習データが複数のサーバーに分散して保存されている状況で、データを一か所に集約することなく機械学習モデルを訓練するための枠組みである。個人情報など、プライバシーの観点からデータの共有が難しい場合にも学習を行えることから、近年注目を集めている。分散学習では、各サーバーでモデルを更新するローカルな計算と、サーバー間でモデルを共有する通信を繰り返す。大規模なモデルの通信には大きなコストがかかるため、通信回数の削減が重要な課題である。本講演では、分散学習における基本的な最適化手法を紹介するとともに、各サーバーでのローカルな計算を増やし、通信回数を削減するための手法を紹介する。",
           "tags": [
             "Distributed Learning",
-            "Communication Efficient",
-            "Optimization"
+            "Communication Efficiency",
+            "Local SGD"
           ]
         },
         {
@@ -432,22 +745,61 @@
           "tags": [
             "LLM",
             "Pre-training",
+            "Loss Spikes",
             "Stability"
           ]
         }
       ]
     },
     {
-      "session_id": "os-4",
+      "session_id": "d4-opt-discuss",
       "day": "2026-10-29",
-      "day_label": "Day 4: Oct 29 (Thu)",
+      "day_label": "Day 4: 10/29 (木)",
+      "title": "次世代最適化アルゴリズム・分散基盤ディスカッション",
+      "track": {
+        "code": "Track B",
+        "name": "国際会議室 (3F)",
+        "sort_order": 2
+      },
+      "category": "os",
+      "start_time": "09:30",
+      "end_time": "11:30",
+      "organizer": "最適化ワーキンググループ",
+      "abstract": "GPUクラスターでの分散最適化の実装課題、非同期通信、通信圧縮ライブラリに関するラウンドテーブル。",
+      "talks": []
+    },
+    {
+      "session_id": "d4-demo-session",
+      "day": "2026-10-29",
+      "day_label": "Day 4: 10/29 (木)",
+      "title": "オープンソース機械学習ツール・デモセッション",
+      "track": {
+        "code": "Track C",
+        "name": "市民ギャラリー (1F)",
+        "sort_order": 3
+      },
+      "category": "general",
+      "start_time": "09:30",
+      "end_time": "11:30",
+      "organizer": "オープンサイエンス委員会",
+      "abstract": "Python/Julia/Rustで開発された最新の機械学習・統計解析オープンソースライブラリの著者によるライブデモ。",
+      "talks": []
+    },
+    {
+      "session_id": "d4-os-4",
+      "day": "2026-10-29",
+      "day_label": "Day 4: 10/29 (木)",
       "title": "企画セッション4: AI for Science",
-      "track": "Main Hall (2F)",
+      "track": {
+        "code": "Track A",
+        "name": "メインホール (2F)",
+        "sort_order": 1
+      },
       "category": "os",
       "start_time": "13:00",
       "end_time": "15:00",
       "organizer": "梶野 洸 (Axcelead Drug Discovery Partners株式会社)",
-      "abstract": "材料科学・創薬・実験自動化におけるAIの成果と、実用化の壁を多面的に討議。",
+      "abstract": "材料科学・創薬・実験自動化におけるAI応用の最前線と、実世界応用における壁と展望。",
       "talks": [
         {
           "title": "生成AIは材料研究をどう変えるか。探索・生成・検証をつなぐ",
@@ -459,9 +811,9 @@
           "end_time": "13:40",
           "abstract": "材料科学におけるAI応用は急速な進展の最中にあり、生成モデルによる材料提案や自律実験による探索の自動化が進んでいる。本講演では、無機材料研究におけるAI活用の動向を概説し、言語と結晶構造を結ぶ表現学習や、大規模言語モデルによる材料生成・アルゴリズム探索の研究事例を紹介する。さらに、AIを用いた研究結果の信頼性をめぐるコミュニティの議論を踏まえ、AIの出力を科学的知見につなげるための課題と展望を論じる。",
           "tags": [
-            "Materials Science",
+            "Materials Informatics",
             "Generative AI",
-            "Discovery"
+            "Crystal Structure"
           ]
         },
         {
@@ -483,30 +835,68 @@
           "title": "AI創薬の壁",
           "speaker": {
             "name": "梶野 洸",
-            "affiliation": "Axcelead Drug Discovery Partners"
+            "affiliation": "Axcelead Drug Discovery Partners株式会社"
           },
           "start_time": "14:20",
           "end_time": "15:00",
           "abstract": "機械学習・人工知能分野では、創薬への応用研究が盛んに行われており、AlphaFoldをはじめとする画期的な技術が開発・公開されている。また、AIを活用することで、短期間で候補化合物を創出したという事例も報告されている。一方で、こうしたAI創薬技術の進展が、創薬現場での広範な活用や創薬プロセス全体の生産性向上に直結しているとは必ずしも言えない。本講演では、AI創薬が現場で使われるまでに存在するさまざまな「壁」について考察する。さらに、実際の活用事例を紹介し、AI技術を創薬の現場でより有効に活用するために何が必要なのかについて議論する。",
           "tags": [
             "Drug Discovery",
-            "Biomedical AI",
-            "Application"
+            "AlphaFold",
+            "Translational Barrier"
           ]
         }
       ]
     },
     {
-      "session_id": "inv-3",
+      "session_id": "d4-bio-session",
       "day": "2026-10-29",
-      "day_label": "Day 4: Oct 29 (Thu)",
-      "title": "招待講演3: 宮尾 祐介 (東京大学・NII)",
-      "track": "Main Hall (2F)",
+      "day_label": "Day 4: 10/29 (木)",
+      "title": "マテリアルズ・バイオインフォマティクス萌芽セッション",
+      "track": {
+        "code": "Track B",
+        "name": "国際会議室 (3F)",
+        "sort_order": 2
+      },
+      "category": "os",
+      "start_time": "13:00",
+      "end_time": "15:00",
+      "organizer": "バイオインフォマティクス研究班",
+      "abstract": "タンパク質構造予測、シングルセル解析、分子動力学シミュレーションの若手研究者ショートプレゼン。",
+      "talks": []
+    },
+    {
+      "session_id": "d4-poster-final",
+      "day": "2026-10-29",
+      "day_label": "Day 4: 10/29 (木)",
+      "title": "学生優秀ポスター賞 最終審査セッション",
+      "track": {
+        "code": "Track C",
+        "name": "市民ギャラリー (1F)",
+        "sort_order": 3
+      },
+      "category": "poster",
+      "start_time": "13:00",
+      "end_time": "15:00",
+      "organizer": "審査委員会",
+      "abstract": "一次選考を通過したファイナリストポスターの審査員前プレゼンテーション。",
+      "talks": []
+    },
+    {
+      "session_id": "d4-inv-3",
+      "day": "2026-10-29",
+      "day_label": "Day 4: 10/29 (木)",
+      "title": "招待講演3: 宮尾 祐介 (東京大学・国立情報学研究所)",
+      "track": {
+        "code": "Track A",
+        "name": "メインホール (2F)",
+        "sort_order": 1
+      },
       "category": "invited",
       "start_time": "15:00",
       "end_time": "16:00",
       "organizer": "IBIS Programme Committee",
-      "abstract": "自然言語処理・基盤モデルの推論と創発的言語理解。",
+      "abstract": "自然言語処理の展開と基盤モデルにおける推論・意味理解の展望。",
       "talks": [
         {
           "title": "自然言語処理と基盤モデルにおける推論・理解の展望",
@@ -516,7 +906,7 @@
           },
           "start_time": "15:00",
           "end_time": "16:00",
-          "abstract": "自然言語処理の歴史的展開とLLM以後の推論・意味理解について概説。",
+          "abstract": "自然言語処理の歴史的展開から近年のLLMにおける創発的能力、記号接地と意味理解の課題を議論。",
           "tags": [
             "NLP",
             "Language Models",
@@ -527,16 +917,37 @@
       ]
     },
     {
-      "session_id": "panel-1",
+      "session_id": "d4-panel-1",
       "day": "2026-10-29",
-      "day_label": "Day 4: Oct 29 (Thu)",
+      "day_label": "Day 4: 10/29 (木)",
       "title": "パネルディスカッション: AI時代の機械学習研究はどうなるか？",
-      "track": "Main Hall (2F)",
+      "track": {
+        "code": "Track A",
+        "name": "メインホール (2F)",
+        "sort_order": 1
+      },
       "category": "panel",
       "start_time": "16:15",
       "end_time": "17:45",
       "organizer": "モデレーター: 今泉 允聡 (東京大学・京都大学・理研AIP)",
-      "abstract": "パネリスト: 宮尾 祐介 (東大/NII), 鈴木 大慈 (東大/理研), 𠮷田 悠一 (NII), 竹内 一郎 (名大/理研AIP), 山口 光太 (CyberAgent)",
+      "abstract": "パネリスト: 宮尾 祐介 (東大/NII), 鈴木 大慈 (東大/理研AIP), 𠮷田 悠一 (NII), 竹内 一郎 (名大/理研AIP), 山口 光太 (CyberAgent)。AI基盤モデル時代の基礎理論研究・応用研究の針路を激論。",
+      "talks": []
+    },
+    {
+      "session_id": "d4-closing",
+      "day": "2026-10-29",
+      "day_label": "Day 4: 10/29 (木)",
+      "title": "クロージング & 優秀賞表彰式",
+      "track": {
+        "code": "Track A",
+        "name": "メインホール (2F)",
+        "sort_order": 1
+      },
+      "category": "general",
+      "start_time": "18:15",
+      "end_time": "18:30",
+      "organizer": "IBIS Steering Committee",
+      "abstract": "学生優秀プレゼンテーション賞表彰、閉会の辞、次回IBISのご案内。",
       "talks": []
     }
   ]

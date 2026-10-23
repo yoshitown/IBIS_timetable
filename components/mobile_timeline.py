@@ -1,51 +1,45 @@
 """
-プレゼンテーション層: モバイル最適化 垂直タイムライン (Vertical Timeline Stream) コンポーネント
-スマートフォンでの片手操作・縦スクロールに特化したUIをレンダリングします。
+プレゼンテーション層: モバイル最適化 並行3トラック統合タイムライン (Vertical Timeline Stream) コンポーネント
+トラック絞り込みフィルターを排除し、並行するTrack A/B/Cのセッションを時系列順に一望できるようにレンダリングします。
 """
 
-from typing import List, Optional
+from typing import Optional
 
 import streamlit as st
 import streamlit.components.v1 as components
 
-from domain.models import Session
+from domain.models import DaySchedule, Session
 from domain.policies import CategoryVisualPolicy, TimePolicy
 
 
 def render_mobile_timeline(
-    sessions: List[Session],
+    schedule: DaySchedule,
     current_minutes: int,
-    selected_day_label: str = "Day 2: 10/27 (火)",
     ongoing_session: Optional[Session] = None,
 ):
     """
-    ユーザー提示のStitchモバイルUIデザインに準拠した垂直タイムラインを生成・レンダリング
+    ドメイン層で整列済みの DaySchedule を受け取り、並行3トラックを垂直タイムラインとして描画
     """
-    if not sessions:
-        st.info("該当するセッションが見つかりませんでした。条件を変更してください。")
+    if not schedule.time_blocks:
+        st.info("該当するセッションが見つかりませんでした。検索条件を変更してください。")
         return
 
     current_time_str = TimePolicy.minutes_to_time_str(current_minutes)
 
-    # セッションを開始時刻順にソート
-    sorted_sessions = sorted(sessions, key=lambda s: s.start_minutes)
-
-    # タイムラインブロックの生成
     timeline_blocks_html = ""
     marker_placed = False
 
-    for s in sorted_sessions:
-        is_ongoing = s.is_ongoing(current_minutes)
+    for block in schedule.time_blocks:
+        is_block_ongoing = block.is_ongoing(current_minutes)
 
-        # 現在時刻マーカー (進行中セッションの手前、または時間帯の間に挿入)
-        # 上部固定バーに隠れないよう、my-3 と scroll-mt-20 を付与
-        if not marker_placed and current_minutes <= s.end_minutes:
+        # 現在時刻マーカー (進行中ブロックの手前、または時間帯の間に挿入)
+        if not marker_placed and current_minutes <= block.end_minutes:
             marker_html = f"""
             <!-- CURRENT TIME LASER INDICATOR ({current_time_str} JST) -->
             <div class="relative pl-8 sm:pl-10 pr-1 my-3 z-20 scroll-mt-20" id="live-marker">
                 <div class="flex items-center gap-2">
                     <div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-error text-on-error shadow-[0_0_12px_rgba(186,26,26,0.45)]">
-                        <span class="w-2 h-2 rounded-full bg-on-error animate-ping"></span>
+                        <span class="w-1.5 h-1.5 rounded-full bg-on-error animate-ping"></span>
                         <span class="font-label-sm text-label-sm tracking-wider font-bold">{current_time_str} LIVE</span>
                     </div>
                     <div class="h-0.5 flex-1 bg-gradient-to-r from-error via-error to-transparent shadow-[0_0_8px_rgba(186,26,26,0.6)]"></div>
@@ -55,118 +49,129 @@ def render_mobile_timeline(
             timeline_blocks_html += marker_html
             marker_placed = True
 
-        # スタイル設定
-        style = CategoryVisualPolicy.get_style(s.category)
-
-        # 左端ボーダー色
-        border_color_class = "bg-primary"
-        if s.category == "invited":
-            border_color_class = "bg-secondary"
-        elif s.category == "tutorial":
-            border_color_class = "bg-surface-tint"
-        elif s.category == "poster":
-            border_color_class = "bg-tertiary"
-        elif s.category == "panel":
-            border_color_class = "bg-inverse-surface"
-
-        # 残り時間計算 (進行中の場合)
-        if is_ongoing:
-            remaining_mins = max(0, s.end_minutes - current_minutes)
-            status_badge_html = f"""
-            <span class="px-2 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-semibold flex items-center gap-1">
-                <span class="w-1.5 h-1.5 rounded-full bg-tertiary-container animate-pulse"></span>
-                LIVE NOW
-            </span>
-            <span class="px-2 py-0.5 rounded-md bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm font-medium">
-                残り {remaining_mins}分
-            </span>
-            """
-        else:
-            status_badge_html = f"""
-            <span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm">
-                {style["label"]}
+        # 並行トラックバッジ
+        parallel_badge_html = ""
+        if block.parallel_count > 1:
+            parallel_badge_html = f"""
+            <span class="font-label-sm text-label-sm font-bold px-2 py-0.5 rounded bg-primary-fixed text-on-primary-fixed">
+                並行 {block.parallel_count} トラック
             </span>
             """
 
-        # 登壇者チップス
-        speakers_chips_html = ""
-        if s.talks:
-            chips = []
-            for idx, t in enumerate(s.talks[:4]):
-                chips.append(
-                    f'<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-body-sm text-body-sm">{idx + 1}. {t.speaker.name} ({t.speaker.affiliation})</span>'
-                )
-            speakers_chips_html = f"""
-            <div class="flex flex-col gap-1 pt-1">
-                <span class="font-label-sm text-label-sm text-on-surface-variant font-medium">登壇者 ({len(s.talks)}件):</span>
-                <div class="flex flex-wrap gap-1.5">
-                    {"".join(chips)}
+        # ブロック内の全セッションカード (Track A → B → C 順)
+        cards_in_block_html = ""
+        for s in block.sessions:
+            is_session_ongoing = s.is_ongoing(current_minutes)
+            style = CategoryVisualPolicy.get_style(s.category)
+
+            # 左端ボーダー色
+            border_color_class = "bg-primary"
+            if s.category == "invited":
+                border_color_class = "bg-secondary"
+            elif s.category == "tutorial":
+                border_color_class = "bg-surface-tint"
+            elif s.category == "poster":
+                border_color_class = "bg-tertiary"
+            elif s.category == "panel":
+                border_color_class = "bg-inverse-surface"
+
+            # 状態バッジ
+            if is_session_ongoing:
+                remaining_mins = max(0, s.end_minutes - current_minutes)
+                status_badge_html = f"""
+                <span class="px-2 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-semibold flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-tertiary-container animate-pulse"></span>
+                    LIVE NOW
+                </span>
+                <span class="px-2 py-0.5 rounded-md bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm font-medium">
+                    残り {remaining_mins}分
+                </span>
+                """
+            else:
+                status_badge_html = f"""
+                <span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm font-medium">
+                    {style["label"]}
+                </span>
+                """
+
+            # 登壇者チップ
+            speakers_chips_html = ""
+            if s.talks:
+                chips = []
+                for idx, t in enumerate(s.talks[:4]):
+                    chips.append(
+                        f'<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-body-sm text-body-sm">{idx + 1}. {t.speaker.name} ({t.speaker.affiliation})</span>'
+                    )
+                speakers_chips_html = f"""
+                <div class="flex flex-col gap-1 pt-1">
+                    <span class="font-label-sm text-label-sm text-on-surface-variant font-medium">登壇者 ({len(s.talks)}件):</span>
+                    <div class="flex flex-wrap gap-1.5">
+                        {"".join(chips)}
+                    </div>
                 </div>
-            </div>
-            """
-        elif s.organizer:
-            speakers_chips_html = f"""
-            <div class="flex items-center gap-2 py-1 bg-surface-container-low px-2 rounded-lg text-body-sm">
-                <span class="material-symbols-outlined text-[16px] text-outline">person</span>
-                <span class="font-medium text-on-surface">{s.organizer}</span>
+                """
+            elif s.organizer:
+                speakers_chips_html = f"""
+                <div class="flex items-center gap-2 py-1 bg-surface-container-low px-2 rounded-lg text-body-sm">
+                    <span class="material-symbols-outlined text-[15px] text-outline">person</span>
+                    <span class="font-medium text-on-surface truncate">{s.organizer}</span>
+                </div>
+                """
+
+            # 詳細ページへの遷移ボタン (target="_top" で親ウィンドウを更新)
+            detail_link_html = f"""
+            <div class="pt-2 flex justify-end">
+                <a target="_top" href="?session={s.session_id}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-surface-container-low hover:bg-surface-container-high text-primary font-label-sm text-label-sm font-bold transition-all shadow-xs active:scale-95 text-decoration-none">
+                    <span>詳細・各講演の要旨を見る</span>
+                    <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+                </a>
             </div>
             """
 
-        # 要旨アコーディオン
-        abstract_html = ""
-        if s.abstract:
-            abstract_html = f"""
-            <div class="mt-2 p-2.5 rounded-lg bg-surface-container-low/70">
-                <details class="group">
-                    <summary class="font-label-sm text-label-sm text-primary font-medium cursor-pointer list-none flex items-center justify-between">
-                        <span>セッション要旨・理論的射程を展開</span>
-                        <span class="material-symbols-outlined text-[16px] transition-transform group-open:rotate-180">expand_more</span>
-                    </summary>
-                    <p class="font-body-sm text-body-sm text-on-surface-variant pt-2 leading-relaxed">
-                        {s.abstract.replace(chr(10), "<br/>")}
-                    </p>
-                </details>
+            # 個別カードHTML
+            cards_in_block_html += f"""
+            <div class="relative rounded-xl bg-surface-container-lowest p-3 sm:p-4 shadow-sm hover:shadow-md transition-shadow flex flex-col gap-2 overflow-hidden border border-outline-variant/30 mb-3 last:mb-0">
+                <div class="absolute left-0 top-0 bottom-0 w-1.5 {border_color_class}"></div>
+
+                <div class="flex items-center justify-between gap-2">
+                    <div class="flex items-center gap-1.5">
+                        {status_badge_html}
+                    </div>
+                    <span class="font-label-sm text-label-sm font-semibold px-2 py-0.5 rounded bg-surface-container-high text-on-surface">
+                        {s.track.full_label}
+                    </span>
+                </div>
+
+                <div class="pt-0.5">
+                    <h2 class="font-headline-md text-headline-md text-on-surface leading-snug font-bold">
+                        {s.title}
+                    </h2>
+                </div>
+
+                {speakers_chips_html}
+                {detail_link_html}
             </div>
             """
 
-        # セッションカード
-        card_html = f"""
-        <!-- Session Block: {s.title} -->
+        # タイムブロック全体のHTML
+        block_node_html = f"""
+        <!-- Time Block: {block.start_time} - {block.end_time} -->
         <div class="relative flex items-start gap-3 sm:gap-4">
             <!-- Time Marker Node -->
             <div class="w-12 pt-1 flex flex-col items-end flex-shrink-0">
-                <span class="font-label-md text-label-md {"text-primary font-bold" if is_ongoing else "text-on-surface font-semibold"}">{s.start_time}</span>
-                <span class="font-label-sm text-label-sm text-outline">{s.end_time}</span>
+                <span class="font-label-md text-label-md {"text-primary font-bold" if is_block_ongoing else "text-on-surface font-semibold"}">{block.start_time}</span>
+                <span class="font-label-sm text-label-sm text-outline">{block.end_time}</span>
             </div>
-            <div class="w-3 h-3 rounded-full {"bg-primary ring-4 ring-primary-fixed" if is_ongoing else "bg-surface-container-highest"} mt-2 flex-shrink-0 z-10"></div>
+            <div class="w-3 h-3 rounded-full {"bg-primary ring-4 ring-primary-fixed" if is_block_ongoing else "bg-surface-container-highest"} mt-2 flex-shrink-0 z-10"></div>
 
-            <!-- Card Body -->
+            <!-- Cards Wrapper (並行トラックカード群) -->
             <div class="flex-1 min-w-0">
-                <div class="relative rounded-xl bg-surface-container-lowest p-3 sm:p-4 shadow-sm hover:shadow-md transition-shadow flex flex-col gap-2 overflow-hidden border border-outline-variant/30">
-                    <div class="absolute left-0 top-0 bottom-0 w-1.5 {border_color_class}"></div>
-
-                    <div class="flex items-center justify-between gap-2">
-                        <div class="flex items-center gap-1.5">
-                            {status_badge_html}
-                        </div>
-                        <span class="font-label-sm text-label-sm text-on-surface-variant font-medium bg-surface-container-high px-2 py-0.5 rounded">
-                            {s.track}
-                        </span>
-                    </div>
-
-                    <div class="pt-0.5">
-                        <h2 class="font-headline-md text-headline-md text-on-surface leading-snug font-bold">
-                            {s.title}
-                        </h2>
-                    </div>
-
-                    {speakers_chips_html}
-                    {abstract_html}
-                </div>
+                {f'<div class="flex items-center justify-between pb-1.5">{parallel_badge_html}</div>' if parallel_badge_html else ""}
+                {cards_in_block_html}
             </div>
         </div>
         """
-        timeline_blocks_html += card_html
+        timeline_blocks_html += block_node_html
 
     # もし全セッション終了後なら末尾にマーカーを挿入
     if not marker_placed:
@@ -302,7 +307,7 @@ def render_mobile_timeline(
         <div class="mt-8 mb-6 flex justify-center">
             <div class="flex items-center gap-3 px-4 py-2 rounded-full bg-inverse-surface/90 text-inverse-on-surface shadow-md text-label-sm font-label-sm">
                 <span class="flex items-center gap-1 text-tertiary-fixed font-semibold">
-                    <span class="w-2 h-2 rounded-full bg-tertiary-fixed"></span> {selected_day_label}
+                    <span class="w-2 h-2 rounded-full bg-tertiary-fixed"></span> {schedule.label}
                 </span>
                 <span class="opacity-40">|</span>
                 <button class="flex items-center gap-0.5 hover:text-primary-fixed transition-colors cursor-pointer" onclick="window.scrollTo({{ top: 0, behavior: 'smooth' }})">
@@ -324,9 +329,9 @@ def render_mobile_timeline(
     </html>
     """
 
-    # 高さ計算の改善: カード1枚あたり270px + マージン・ヘッダー・フッター250pxに拡張
-    # さらに scrolling=True で万一コンテンツが長くなっても下部が切れないように保護
-    calculated_height = max(800, 250 + len(sorted_sessions) * 270)
+    # 全体カード数に基づく動的高さ計算
+    total_cards = sum(b.parallel_count for b in schedule.time_blocks)
+    calculated_height = max(800, 250 + total_cards * 190)
 
-    # components.html で安全かつ美しくレンダリング (scrolling=Trueで下切れ防止)
+    # components.html で安全かつ美しくレンダリング
     components.html(full_html, height=calculated_height, scrolling=True)

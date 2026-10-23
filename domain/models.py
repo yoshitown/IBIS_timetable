@@ -1,8 +1,23 @@
 """
 ドメインモデル層: 学術カンファレンス (IBIS2026) のビジネスデータ構造と振る舞いをカプセル化
+設計原則: 貧血ドメインモデルの回避、ファーストクラスコレクション、値オブジェクトの導入
 """
 
 from dataclasses import dataclass, field
+from typing import List, Optional
+
+
+@dataclass(frozen=True)
+class Track:
+    """会場・トラックを表す値オブジェクト (コード、会場名、ソート順序をカプセル化)"""
+
+    code: str  # 例: "Track A", "Track B", "Track C"
+    name: str  # 例: "メインホール (2F)", "国際会議室 (3F)", "市民ギャラリー (1F)"
+    sort_order: int = 1  # 1: Track A, 2: Track B, 3: Track C, 99: Other
+
+    @property
+    def full_label(self) -> str:
+        return f"{self.code}: {self.name}"
 
 
 @dataclass(frozen=True)
@@ -25,9 +40,9 @@ class Talk:
     speaker: Speaker
     start_time: str
     end_time: str
-    abstract: str | None = None
-    citations: list[str] = field(default_factory=list)
-    tags: list[str] = field(default_factory=list)
+    abstract: Optional[str] = None
+    citations: List[str] = field(default_factory=list)
+    tags: List[str] = field(default_factory=list)
 
     def matches(self, keyword: str) -> bool:
         kw = keyword.lower()
@@ -40,47 +55,101 @@ class Talk:
 
 @dataclass(frozen=True)
 class Session:
-    """タイムテーブル上のセッション枠（チュートリアル、企画セッション、招待講演など）"""
+    """タイムテーブル上の個別セッション枠"""
 
     session_id: str
-    day: str  # 例: "2026-10-27"
-    day_label: str  # 例: "Day 2: Oct 27 (Tue)"
+    day: str  # "2026-10-27"
+    day_label: str  # "Day 2: 10/27 (火)"
     title: str
-    track: str  # 例: "Main Hall (2F)"
-    category: str  # "tutorial" | "os" | "invited" | "poster" | "panel" | "general"
+    track: Track
+    category: str  # "os" | "invited" | "tutorial" | "poster" | "panel" | "general"
     start_time: str  # "10:00"
     end_time: str  # "12:00"
     start_minutes: int  # 600
     end_minutes: int  # 720
-    organizer: str | None = None
-    talks: list[Talk] = field(default_factory=list)
-    abstract: str | None = None
-    url: str | None = None
+    organizer: Optional[str] = None
+    talks: List[Talk] = field(default_factory=list)
+    abstract: Optional[str] = None
+    url: Optional[str] = None
 
     @property
     def duration_minutes(self) -> int:
-        """セッションの所要時間（分）"""
         return self.end_minutes - self.start_minutes
 
     @property
     def primary_speaker_names(self) -> str:
-        """主な登壇者名一覧の文字列"""
         if not self.talks:
             return ""
         return " • ".join(t.speaker.name for t in self.talks)
 
     def is_ongoing(self, minutes: int) -> bool:
-        """指定時刻（0:00からの通算分）に進行中であるかを判定"""
+        """注入された時刻（分）において進行中であるかを判定"""
         return self.start_minutes <= minutes < self.end_minutes
 
     def matches_keyword(self, keyword: str) -> bool:
-        """キーワードがタイトル、要旨、オーガナイザー、各講演に含まれるかを判定"""
         if not keyword:
             return True
         kw = keyword.lower()
         in_title = kw in self.title.lower()
         in_abstract = self.abstract is not None and kw in self.abstract.lower()
         in_organizer = self.organizer is not None and kw in self.organizer.lower()
-        in_track = kw in self.track.lower()
+        in_track = kw in self.track.name.lower() or kw in self.track.code.lower()
         in_talks = any(talk.matches(kw) for talk in self.talks)
         return in_title or in_abstract or in_organizer or in_track or in_talks
+
+
+@dataclass(frozen=True)
+class TimeBlock:
+    """
+    ファーストクラスコレクション: 同一時間帯に並行開催されるセッション群
+    UIコンポーネントでのグルーピング処理を排除し、Track A → B → C 順に整列された不変リストを提供
+    """
+
+    start_time: str
+    end_time: str
+    start_minutes: int
+    end_minutes: int
+    sessions: List[Session]  # Track.sort_order 順に整列済み
+
+    @property
+    def parallel_count(self) -> int:
+        return len(self.sessions)
+
+    def is_ongoing(self, minutes: int) -> bool:
+        return self.start_minutes <= minutes < self.end_minutes
+
+
+@dataclass(frozen=True)
+class DaySchedule:
+    """
+    ファーストクラスコレクション: 1日分の全タイムブロックコレクション
+    """
+
+    date: str
+    label: str
+    time_blocks: List[TimeBlock]
+
+    def ongoing_block(self, current_minutes: int) -> Optional[TimeBlock]:
+        """現在時刻（分）において進行中のタイムブロックを返却"""
+        for block in self.time_blocks:
+            if block.is_ongoing(current_minutes):
+                return block
+        return None
+
+
+@dataclass(frozen=True)
+class SessionNavigation:
+    """前後のセッションへのナビゲーションリンク"""
+
+    previous_session: Optional[Session] = None
+    next_session: Optional[Session] = None
+
+
+@dataclass(frozen=True)
+class SessionDetailResult:
+    """セッション詳細検索結果（境界防御と明示的な型）"""
+
+    session: Optional[Session] = None
+    navigation: Optional[SessionNavigation] = None
+    is_found: bool = True
+    error_message: Optional[str] = None

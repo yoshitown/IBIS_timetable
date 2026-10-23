@@ -1,9 +1,18 @@
 """
 アプリケーション層: プレゼンテーション層からのユースケース要求を処理するサービス
+設計原則: 貧血ドメインモデルの回避、ファーストクラスコレクションの構築、境界防御
 """
 
-from domain.models import Session
-from domain.policies import CategoryVisualPolicy, FilterPolicy
+from typing import Dict, List, Optional
+
+from domain.models import (
+    DaySchedule,
+    Session,
+    SessionDetailResult,
+    SessionNavigation,
+    TimeBlock,
+)
+from domain.policies import FilterPolicy
 from infrastructure.json_repository import JsonScheduleRepository
 
 
@@ -12,56 +21,115 @@ class ScheduleService:
 
     def __init__(self, repository: JsonScheduleRepository):
         self.repository = repository
-        self._cached_sessions: list[Session] | None = None
+        self._cached_sessions: Optional[List[Session]] = None
 
-    def _get_all_sessions(self) -> list[Session]:
+    def _get_all_sessions(self) -> List[Session]:
         if self._cached_sessions is None:
             self._cached_sessions = self.repository.load_all_sessions()
         return self._cached_sessions
 
-    def get_days(self) -> list[dict[str, str]]:
+    def get_days(self) -> List[Dict[str, str]]:
         """カンファレンスの日程一覧を取得"""
         return self.repository.load_days()
 
-    def get_filtered_schedule(
+    def get_day_schedule(
         self,
-        day: str | None = None,
-        category: str | None = None,
-        keyword: str | None = None,
-    ) -> list[Session]:
-        """指定された検索・フィルタ条件に合致するセッション一覧を取得"""
-        sessions = self._get_all_sessions()
-        return FilterPolicy.apply(
-            sessions=sessions,
-            day=day,
-            category=category,
+        date: str,
+        keyword: Optional[str] = None,
+    ) -> DaySchedule:
+        """
+        特定日のスケジュールをファーストクラスコレクション (DaySchedule) として構築。
+        同一時間帯のセッションを TimeBlock に集約し、Track A → B → C の順に整列して返却。
+        """
+        all_sessions = self._get_all_sessions()
+        day_sessions = FilterPolicy.apply(
+            sessions=all_sessions,
+            day=date,
             keyword=keyword,
         )
 
-    def get_session_by_id(self, session_id: str) -> Session | None:
-        """セッションIDから特定のセッション詳細を取得"""
-        sessions = self._get_all_sessions()
-        for s in sessions:
-            if s.session_id == session_id:
-                return s
-        return None
-
-    def get_ongoing_session(self, day: str, minutes: int) -> Session | None:
-        """指定日の指定時刻（分）において現在進行中のセッションを取得"""
-        day_sessions = self.get_filtered_schedule(day=day)
+        # 時間帯 (start_minutes, end_minutes) ごとにグルーピング
+        time_slot_map: Dict[tuple[int, int, str, str], List[Session]] = {}
         for s in day_sessions:
-            if s.is_ongoing(minutes):
-                return s
-        return None
+            key = (s.start_minutes, s.end_minutes, s.start_time, s.end_time)
+            if key not in time_slot_map:
+                time_slot_map[key] = []
+            time_slot_map[key].append(s)
 
-    def get_category_filters(self) -> list[dict[str, str]]:
-        """利用可能なカテゴリ一覧と表示メタデータを取得"""
-        categories = ["all", "os", "invited", "tutorial", "poster", "panel"]
-        result = []
-        for cat in categories:
-            if cat == "all":
-                result.append({"key": "all", "label": "All Sessions"})
-            else:
-                style = CategoryVisualPolicy.get_style(cat)
-                result.append({"key": cat, "label": style["label"]})
-        return result
+        # 時間帯順にソートして TimeBlock のリストを作成
+        sorted_keys = sorted(time_slot_map.keys(), key=lambda k: k[0])
+        time_blocks: List[TimeBlock] = []
+
+        for key in sorted_keys:
+            start_min, end_min, start_str, end_str = key
+            slot_sessions = time_slot_map[key]
+            # Track.sort_order 順（Track A → B → C）に整列
+            sorted_slot_sessions = sorted(slot_sessions, key=lambda s: s.track.sort_order)
+
+            time_blocks.append(
+                TimeBlock(
+                    start_time=start_str,
+                    end_time=end_str,
+                    start_minutes=start_min,
+                    end_minutes=end_min,
+                    sessions=sorted_slot_sessions,
+                )
+            )
+
+        # 日付ラベルの取得
+        days = self.get_days()
+        label = next((d["label"] for d in days if d["date"] == date), date)
+
+        return DaySchedule(
+            date=date,
+            label=label,
+            time_blocks=time_blocks,
+        )
+
+    def get_session_detail(self, session_id: str) -> SessionDetailResult:
+        """
+        セッションIDから詳細と前後ナビゲーションを取得（境界防御と明示的な型）
+        """
+        sessions = self._get_all_sessions()
+        target_session = None
+
+        for idx, s in enumerate(sessions):
+            if s.session_id == session_id:
+                target_session = s
+                break
+
+        if target_session is None:
+            return SessionDetailResult(
+                is_found=False,
+                error_message=f"セッションID '{session_id}' は存在しません。",
+            )
+
+        # 前後のセッション導出（同一日のセッション順）
+        same_day_sessions = [s for s in sessions if s.day == target_session.day]
+        same_day_idx = same_day_sessions.index(target_session)
+
+        prev_session = same_day_sessions[same_day_idx - 1] if same_day_idx > 0 else None
+        next_session = (
+            same_day_sessions[same_day_idx + 1]
+            if same_day_idx < len(same_day_sessions) - 1
+            else None
+        )
+
+        navigation = SessionNavigation(
+            previous_session=prev_session,
+            next_session=next_session,
+        )
+
+        return SessionDetailResult(
+            session=target_session,
+            navigation=navigation,
+            is_found=True,
+        )
+
+    def get_ongoing_session(self, date: str, current_minutes: int) -> Optional[Session]:
+        """指定日の指定時刻（分）において現在進行中の代表セッションを取得"""
+        schedule = self.get_day_schedule(date=date)
+        ongoing_block = schedule.ongoing_block(current_minutes)
+        if ongoing_block and ongoing_block.sessions:
+            return ongoing_block.sessions[0]
+        return None
