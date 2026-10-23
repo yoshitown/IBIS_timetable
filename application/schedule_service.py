@@ -7,10 +7,12 @@ from typing import Dict, List, Optional
 
 from domain.models import (
     DaySchedule,
+    RoomGuide,
     Session,
     SessionDetailResult,
     SessionNavigation,
     TimeBlock,
+    VenueGuide,
 )
 from domain.policies import FilterPolicy
 from infrastructure.json_repository import JsonScheduleRepository
@@ -151,3 +153,60 @@ class ScheduleService:
         if ongoing_block and ongoing_block.sessions:
             return ongoing_block.sessions[0]
         return None
+
+    def get_venue_guide(self) -> VenueGuide:
+        """会場全体・フロアマップ情報の取得"""
+        rooms = [
+            RoomGuide(
+                track_code="Track A",
+                room_name="メインホール (大ホール)",
+                building="ホール棟",
+                floor="2F",
+                access_instruction="大宮駅西口の歩行者デッキ直結の北口エントランスから入館してすぐ正面です。総合受付もこのフロアに設置されます。",
+                note="Day 2・3のポスターセッション時は2Fホワイエも併用されます。",
+            ),
+            RoomGuide(
+                track_code="Track B",
+                room_name="国際会議室",
+                building="ホール棟",
+                floor="4F",
+                access_instruction="ホール棟2Fエントランスより館内奥のエレベーターを利用して4階へ上がってください。",
+            ),
+            RoomGuide(
+                track_code="Track C",
+                room_name="市民ギャラリー / 市民ホール",
+                building="ビル棟 (ソニックシティビル)",
+                floor="1F / B1F",
+                access_instruction="歩行者デッキ右手のソニックシティビル入口より入館し、館内エスカレーターで1階または地下1階へ降りてください。",
+            ),
+            RoomGuide(
+                track_code="Poster",
+                room_name="第1展示場 (ポスター会場)",
+                building="ビル棟 (ソニックシティビル)",
+                floor="B1F",
+                access_instruction="ビル棟入口よりエレベーターまたはエスカレーターで地下1階へお降りください。",
+            ),
+            RoomGuide(
+                track_code="Party",
+                room_name="パレスホテル大宮 (懇親会会場)",
+                building="パレスホテル大宮",
+                floor="宴会場フロア",
+                access_instruction="ソニックシティビルに隣接。2F歩行者デッキ経由で直通アクセス可能です。",
+            ),
+        ]
+        return VenueGuide(
+            name="大宮ソニックシティ (Sonic City Hall)",
+            address="埼玉県さいたま市大宮区桜木町1-7-5",
+            station_access="JR・東武野田線・ニューシャトル「大宮駅」西口より歩行者デッキ直結 徒歩約3分",
+            map_images={
+                "route": "data/maps/access_hall_intl.png",
+                "floor": "data/maps/floor_hall_4f.jpg",
+                "building": "data/maps/sonic_city_building_guide.png",
+            },
+            rooms=rooms,
+        )
+
+    def get_room_guide_for_track(self, track_code: str) -> Optional[RoomGuide]:
+        """トラックコードに対応する部屋ガイドを取得"""
+        venue = self.get_venue_guide()
+        return venue.get_room_guide(track_code)
