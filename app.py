@@ -1,21 +1,20 @@
 """
-プレゼンテーション層: IBIS2026 タイムライン＆アジェンダViewer メインエントリーポイント
-三層＋ドメインモデルの原則に基づき、UI描画とユーザーインタラクションに専念します。
+プレゼンテーション層: IBIS2026 モバイル最適化 垂直タイムライン＆アジェンダViewer
+三層＋ドメインモデルの原則を適用し、スマートフォンの片手縦スクロールに特化したUIを提供します。
 """
 
 from pathlib import Path
 import streamlit as st
 from application.schedule_service import ScheduleService
-from components.detail_drawer import render_session_inspector
-from components.timeline import render_timeline_canvas
+from components.mobile_timeline import render_mobile_timeline
 from domain.policies import TimePolicy
 from infrastructure.json_repository import JsonScheduleRepository
 
-# 1. ページ設定 (Stitchデザイン準拠)
+# 1. ページ設定 (モバイル優先・レスポンシブ)
 st.set_page_config(
-    page_title="IBIS2026 タイムライン＆アジェンダViewer",
-    page_icon="⏱️",
-    layout="wide",
+    page_title="IBIS2026 モバイルタイムライン",
+    page_icon="📱",
+    layout="centered",  # スマホ画面・片手閲覧に最適な中央集約レイアウト
     initial_sidebar_state="collapsed",
 )
 
@@ -24,7 +23,7 @@ DATA_PATH = Path(__file__).parent / "data" / "ibis2026_program.json"
 repository = JsonScheduleRepository(DATA_PATH)
 service = ScheduleService(repository)
 
-# 3. カスタムスタイル (Inter + JetBrains Mono、微細ボーダー)
+# 3. モバイル特化スタイル設定
 st.markdown(
     """
     <style>
@@ -35,113 +34,110 @@ st.markdown(
             color: #0f172a;
         }
         .main .block-container {
-            padding-top: 1.5rem !important;
+            padding-top: 1rem !important;
             padding-bottom: 2rem !important;
-            max-width: 1600px !important;
+            padding-left: 0.75rem !important;
+            padding-right: 0.75rem !important;
+            max-width: 720px !important;
         }
         header[data-testid="stHeader"] {
-            background-color: transparent !important;
+            display: none !important;
         }
         footer {
             display: none !important;
+        }
+        iframe {
+            border: none !important;
+            width: 100% !important;
         }
     </style>
     """,
     unsafe_allow_html=True,
 )
 
-# 4. マストヘッド (固定Deep Navyヘッダー)
+# 4. モバイルヘッダー
 st.markdown(
     """
-    <div style="background-color: #0f172a; color: #f8fafc; border-radius: 8px; padding: 16px 20px; margin-bottom: 16px; box-shadow: 0 4px 12px rgba(15,23,42,0.15);">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <div style="background: #3525cd; color: white; font-weight: bold; font-family: 'JetBrains Mono', monospace; font-size: 16px; padding: 4px 10px; border-radius: 4px;">
+    <div style="background-color: #0f172a; color: #f8fafc; border-radius: 12px; padding: 14px 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(15,23,42,0.12);">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; items-center; gap: 8px;">
+                <span style="background: #3525cd; color: white; font-weight: bold; font-family: 'JetBrains Mono', monospace; font-size: 14px; padding: 3px 8px; border-radius: 4px;">
                     IBIS2026
-                </div>
-                <div>
-                    <div style="font-size: 18px; font-weight: 700; line-height: 1.2;">タイムライン＆アジェンダViewer</div>
-                    <div style="font-size: 12px; color: #94a3b8; font-family: 'JetBrains Mono', monospace;">
-                        2026年10月26日(月)〜10月29日(木) • ソニックシティ（埼玉県さいたま市）
-                    </div>
-                </div>
+                </span>
+                <span style="font-size: 16px; font-weight: 700; line-height: 1.4;">タイムライン</span>
             </div>
-            <div style="display: flex; align-items: center; gap: 16px; font-family: 'JetBrains Mono', monospace; font-size: 12px;">
-                <div style="background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 4px; display: flex; align-items: center; gap: 6px;">
-                    <span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981;"></span>
-                    <span>JST (UTC+9)</span>
-                </div>
+            <div style="display: flex; align-items: center; gap: 6px; font-family: 'JetBrains Mono', monospace; font-size: 11px; background: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 12px;">
+                <span style="width: 7px; height: 7px; border-radius: 50%; background: #10b981;"></span>
+                <span>Day 2 Live</span>
             </div>
+        </div>
+        <div style="font-size: 11px; color: #94a3b8; margin-top: 4px; font-family: 'JetBrains Mono', monospace;">
+            10/26(月)〜10/29(木) • ソニックシティ（埼玉県さいたま市）
         </div>
     </div>
     """,
     unsafe_allow_html=True,
 )
 
-# 5. カンファレンス日程タブの取得と選択
+# 5. カンファレンス日程タブの選択
 days = service.get_days()
 day_options = {d["date"]: d["label"] for d in days}
 
-# セッション状態の初期化
 if "selected_day" not in st.session_state:
     st.session_state["selected_day"] = "2026-10-27"  # デフォルト: Day 2
 
-# 日付選択タブバー
-col_day, col_search = st.columns([3, 2])
-with col_day:
-    selected_day = st.radio(
-        "📅 日程選択",
-        options=list(day_options.keys()),
-        format_func=lambda x: day_options[x],
-        horizontal=True,
-        index=list(day_options.keys()).index(st.session_state["selected_day"])
-        if st.session_state["selected_day"] in day_options
-        else 1,
-        key="day_radio",
-        label_visibility="collapsed",
-    )
-    st.session_state["selected_day"] = selected_day
+# 水平日程セレクター (スマホでも押しやすいタブ)
+selected_day = st.radio(
+    "日程選択",
+    options=list(day_options.keys()),
+    format_func=lambda x: day_options[x].split(":")[0] + " " + day_options[x].split(":")[1].split("(")[0].strip(),
+    horizontal=True,
+    index=list(day_options.keys()).index(st.session_state["selected_day"])
+    if st.session_state["selected_day"] in day_options
+    else 1,
+    key="mobile_day_radio",
+    label_visibility="collapsed",
+)
+st.session_state["selected_day"] = selected_day
 
-with col_search:
+# 6. コントロールバー (トラック/カテゴリフィルター & 検索 & 時刻シミュレーション)
+with st.expander("⚙️ フィルター & 時刻シミュレーション", expanded=False):
     search_keyword = st.text_input(
-        "🔍 登壇者・タイトル・要旨キーワード検索",
-        placeholder="例: 今泉, 栗田, 最適化, Physical AI...",
+        "🔍 登壇者・タイトル・要旨検索",
+        placeholder="例: 今泉, 最適化, Physical AI...",
         label_visibility="collapsed",
     )
 
-# 6. コントロールストリップ (カテゴリフィルター & 赤線インジケータースライダー)
-with st.container():
-    c_cat, c_toggle, c_slider = st.columns([2, 1, 2])
-
+    c_cat, c_time = st.columns([1, 1])
     with c_cat:
         category_options = service.get_category_filters()
         cat_keys = [c["key"] for c in category_options]
         selected_cat = st.selectbox(
-            "セッション種別フィルター",
+            "種別フィルター",
             options=cat_keys,
-            format_func=lambda k: next(
-                c["label"] for c in category_options if c["key"] == k
-            ),
+            format_func=lambda k: next(c["label"] for c in category_options if c["key"] == k),
             index=0,
             label_visibility="collapsed",
         )
 
-    with c_toggle:
-        show_red_marker = st.checkbox("赤線時刻バー表示", value=True)
-
-    with c_slider:
+    with c_time:
         simulated_minutes = st.slider(
-            "⏱️ 現在時刻シミュレーション (JST)",
+            "現在時刻 (JST)",
             min_value=540,  # 09:00
             max_value=1140,  # 19:00
             value=680,  # 11:20
             step=5,
             format="%d分",
-            help="学会当日の現在時刻に対応した赤線インジケーターをシミュレートします",
             label_visibility="collapsed",
         )
         current_time_str = TimePolicy.minutes_to_time_str(simulated_minutes)
-        st.caption(f"現在の指定時刻: **{current_time_str} JST**")
+        st.caption(f"シミュレーション時刻: **{current_time_str} JST**")
+else:
+    # expanderを閉じた状態のデフォルト
+    search_keyword = None
+    selected_cat = "all"
+    simulated_minutes = 680  # 11:20
+    current_time_str = "11:20"
 
 # 7. アプリケーション層から絞り込み済みセッションを取得
 filtered_sessions = service.get_filtered_schedule(
@@ -150,47 +146,15 @@ filtered_sessions = service.get_filtered_schedule(
     keyword=search_keyword,
 )
 
-# 進行中セッションの取得 (あればデフォルト選択候補にする)
 ongoing_session = service.get_ongoing_session(
-    day=selected_day, minutes=simulated_minutes
+    day=selected_day,
+    minutes=simulated_minutes,
 )
 
-# 8. メインビューポート: タイムライン (左側 65%) + サイドインスペクター (右側 35%)
-col_timeline, col_inspector = st.columns([7, 5])
-
-with col_timeline:
-    st.markdown("#### 📊 タイムライン (Gantt Schedule)")
-    if ongoing_session:
-        st.markdown(
-            f"""
-            <div style="display: inline-flex; align-items: center; gap: 6px; background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; padding: 3px 10px; border-radius: 4px; font-size: 11px; font-weight: 600; margin-bottom: 8px;">
-                <span style="width: 6px; height: 6px; border-radius: 50%; background: #dc2626;"></span>
-                <span>進行中: {ongoing_session.title} ({ongoing_session.start_time} - {ongoing_session.end_time})</span>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
-    # タイムラインのレンダリング
-    selected_id_from_timeline = render_timeline_canvas(
-        sessions=filtered_sessions,
-        current_minutes=simulated_minutes,
-        show_marker=show_red_marker,
-        selected_session_id=ongoing_session.session_id if ongoing_session else None,
-    )
-
-with col_inspector:
-    st.markdown("#### 📖 セッション詳細 & 要旨インスペクター")
-    # 選択セッションの決定
-    target_session = None
-    if selected_id_from_timeline:
-        target_session = service.get_session_by_id(selected_id_from_timeline)
-    elif ongoing_session:
-        target_session = ongoing_session
-    elif filtered_sessions:
-        target_session = filtered_sessions[0]
-
-    render_session_inspector(
-        session=target_session,
-        selected_time_str=current_time_str,
-    )
+# 8. モバイル最適化 垂直タイムラインのレンダリング
+render_mobile_timeline(
+    sessions=filtered_sessions,
+    current_minutes=simulated_minutes,
+    selected_day_label=day_options.get(selected_day, "Day 2"),
+    ongoing_session=ongoing_session,
+)
