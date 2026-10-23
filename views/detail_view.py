@@ -88,6 +88,11 @@ def render_detail_view(
     # 部屋アクセス案内 (該当トラックのRoomGuideが存在する場合)
     if room_guide:
         render_room_inline_badge(room_guide)
+        if st.button("🗺️ 会場全体の地図・部屋の行き方を見る ➔", key="btn_venue_map_from_detail"):
+            st.query_params["page"] = "venue"
+            if "session" in st.query_params:
+                del st.query_params["session"]
+            st.rerun()
 
     # 4. セッション趣旨・概要 (セッション全体のもの)
     if session.abstract:

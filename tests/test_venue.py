@@ -39,7 +39,7 @@ def test_venue_map_images_exist(service: ScheduleService):
     repo_root = Path(__file__).parent.parent
     venue = service.get_venue_guide()
 
-    required_keys = {"route", "floor", "building"}
+    required_keys = {"overview", "route", "floor", "building"}
     assert required_keys.issubset(venue.map_images.keys())
 
     for key, relative_path in venue.map_images.items():
