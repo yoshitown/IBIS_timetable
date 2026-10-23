@@ -3,6 +3,8 @@
 スマートフォンでの片手操作・縦スクロールに特化したUIをレンダリングします。
 """
 
+from typing import List, Optional
+
 import streamlit as st
 import streamlit.components.v1 as components
 
@@ -11,10 +13,10 @@ from domain.policies import CategoryVisualPolicy, TimePolicy
 
 
 def render_mobile_timeline(
-    sessions: list[Session],
+    sessions: List[Session],
     current_minutes: int,
     selected_day_label: str = "Day 2: 10/27 (火)",
-    ongoing_session: Session | None = None,
+    ongoing_session: Optional[Session] = None,
 ):
     """
     ユーザー提示のStitchモバイルUIデザインに準拠した垂直タイムラインを生成・レンダリング
@@ -36,13 +38,14 @@ def render_mobile_timeline(
         is_ongoing = s.is_ongoing(current_minutes)
 
         # 現在時刻マーカー (進行中セッションの手前、または時間帯の間に挿入)
+        # 上部固定バーに隠れないよう、my-3 と scroll-mt-20 を付与
         if not marker_placed and current_minutes <= s.end_minutes:
             marker_html = f"""
             <!-- CURRENT TIME LASER INDICATOR ({current_time_str} JST) -->
-            <div class="relative pl-10 pr-1 py-1 -my-1 z-20" id="live-marker">
+            <div class="relative pl-8 sm:pl-10 pr-1 my-3 z-20 scroll-mt-20" id="live-marker">
                 <div class="flex items-center gap-2">
-                    <div class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-error text-on-error shadow-[0_0_12px_rgba(186,26,26,0.45)]">
-                        <span class="w-1.5 h-1.5 rounded-full bg-on-error animate-ping"></span>
+                    <div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-error text-on-error shadow-[0_0_12px_rgba(186,26,26,0.45)]">
+                        <span class="w-2 h-2 rounded-full bg-on-error animate-ping"></span>
                         <span class="font-label-sm text-label-sm tracking-wider font-bold">{current_time_str} LIVE</span>
                     </div>
                     <div class="h-0.5 flex-1 bg-gradient-to-r from-error via-error to-transparent shadow-[0_0_8px_rgba(186,26,26,0.6)]"></div>
@@ -67,7 +70,6 @@ def render_mobile_timeline(
             border_color_class = "bg-inverse-surface"
 
         # 残り時間計算 (進行中の場合)
-        status_badge_html = ""
         if is_ongoing:
             remaining_mins = max(0, s.end_minutes - current_minutes)
             status_badge_html = f"""
@@ -130,7 +132,7 @@ def render_mobile_timeline(
         # セッションカード
         card_html = f"""
         <!-- Session Block: {s.title} -->
-        <div class="relative flex items-start gap-space-md">
+        <div class="relative flex items-start gap-3 sm:gap-4">
             <!-- Time Marker Node -->
             <div class="w-12 pt-1 flex flex-col items-end flex-shrink-0">
                 <span class="font-label-md text-label-md {"text-primary font-bold" if is_ongoing else "text-on-surface font-semibold"}">{s.start_time}</span>
@@ -140,7 +142,7 @@ def render_mobile_timeline(
 
             <!-- Card Body -->
             <div class="flex-1 min-w-0">
-                <div class="relative rounded-xl bg-surface-container-lowest p-space-md shadow-sm hover:shadow-md transition-shadow flex flex-col gap-space-xs overflow-hidden border border-outline-variant/30">
+                <div class="relative rounded-xl bg-surface-container-lowest p-3 sm:p-4 shadow-sm hover:shadow-md transition-shadow flex flex-col gap-2 overflow-hidden border border-outline-variant/30">
                     <div class="absolute left-0 top-0 bottom-0 w-1.5 {border_color_class}"></div>
 
                     <div class="flex items-center justify-between gap-2">
@@ -169,9 +171,9 @@ def render_mobile_timeline(
     # もし全セッション終了後なら末尾にマーカーを挿入
     if not marker_placed:
         timeline_blocks_html += f"""
-        <div class="relative pl-10 pr-1 py-1 -my-1 z-20" id="live-marker">
+        <div class="relative pl-8 sm:pl-10 pr-1 my-3 z-20 scroll-mt-20" id="live-marker">
             <div class="flex items-center gap-2">
-                <div class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-error text-on-error">
+                <div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-error text-on-error">
                     <span class="font-label-sm text-label-sm font-bold">{current_time_str} LIVE</span>
                 </div>
                 <div class="h-0.5 flex-1 bg-error"></div>
@@ -265,10 +267,10 @@ def render_mobile_timeline(
         }};
         </script>
     </head>
-    <body class="bg-surface font-body-md text-on-surface antialiased p-2 sm:p-4">
-        <!-- Real-time Alert & Jump Bar -->
-        <div class="sticky top-0 z-30 bg-surface/95 backdrop-blur-md pb-2 pt-1">
-            <div class="flex items-center justify-between px-space-md py-2 rounded-xl bg-surface-container-lowest shadow-sm border border-outline-variant/30">
+    <body class="bg-surface font-body-md text-on-surface antialiased p-2 sm:p-4 pb-16">
+        <!-- Real-time Alert & Jump Bar (Sticky Top) -->
+        <div class="sticky top-0 z-30 bg-surface/95 backdrop-blur-md pb-3 pt-1 border-b border-outline-variant/20 shadow-xs mb-3">
+            <div class="flex items-center justify-between px-3 py-2 rounded-xl bg-surface-container-lowest shadow-sm border border-outline-variant/30">
                 <div class="flex items-center gap-2 min-w-0">
                     <span class="flex h-2.5 w-2.5 relative flex-shrink-0">
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-error opacity-75"></span>
@@ -279,7 +281,7 @@ def render_mobile_timeline(
                         <span class="font-body-sm text-body-sm text-on-surface-variant truncate">{ongoing_text}</span>
                     </div>
                 </div>
-                <button class="flex items-center gap-1 px-3 py-1 rounded-lg bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm font-semibold active:scale-95 transition-transform flex-shrink-0 shadow-xs cursor-pointer" onclick="document.getElementById('live-marker').scrollIntoView({{ behavior: 'smooth', block: 'center' }})">
+                <button class="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm font-semibold active:scale-95 transition-transform flex-shrink-0 shadow-xs cursor-pointer" onclick="scrollToMarker()">
                     <span class="material-symbols-outlined text-[15px]">my_location</span>
                     現在位置へ
                 </button>
@@ -287,17 +289,17 @@ def render_mobile_timeline(
         </div>
 
         <!-- Vertical Timeline Matrix -->
-        <div class="relative w-full px-2 pt-4">
+        <div class="relative w-full px-2 pt-2">
             <!-- Continuous Timeline Axis Bar -->
-            <div class="absolute left-[62px] top-6 bottom-4 w-0.5 bg-surface-container-highest"></div>
+            <div class="absolute left-[62px] top-4 bottom-4 w-0.5 bg-surface-container-highest"></div>
 
             <div class="flex flex-col gap-y-6">
                 {timeline_blocks_html}
             </div>
         </div>
 
-        <!-- Floating Bottom Status Pill -->
-        <div class="mt-8 mb-4 flex justify-center">
+        <!-- Bottom Status Pill -->
+        <div class="mt-8 mb-6 flex justify-center">
             <div class="flex items-center gap-3 px-4 py-2 rounded-full bg-inverse-surface/90 text-inverse-on-surface shadow-md text-label-sm font-label-sm">
                 <span class="flex items-center gap-1 text-tertiary-fixed font-semibold">
                     <span class="w-2 h-2 rounded-full bg-tertiary-fixed"></span> {selected_day_label}
@@ -309,12 +311,22 @@ def render_mobile_timeline(
                 </button>
             </div>
         </div>
+
+        <script>
+        function scrollToMarker() {{
+            const marker = document.getElementById('live-marker');
+            if (marker) {{
+                marker.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
+            }}
+        }}
+        </script>
     </body>
     </html>
     """
 
-    # 動的な高さ計算 (各カード約160px〜220px)
-    calculated_height = max(600, 140 + len(sorted_sessions) * 190)
+    # 高さ計算の改善: カード1枚あたり270px + マージン・ヘッダー・フッター250pxに拡張
+    # さらに scrolling=True で万一コンテンツが長くなっても下部が切れないように保護
+    calculated_height = max(800, 250 + len(sorted_sessions) * 270)
 
-    # components.html で安全かつ美しくレンダリング
-    components.html(full_html, height=calculated_height, scrolling=False)
+    # components.html で安全かつ美しくレンダリング (scrolling=Trueで下切れ防止)
+    components.html(full_html, height=calculated_height, scrolling=True)
