@@ -9,6 +9,7 @@ import streamlit as st
 
 from application.schedule_service import ScheduleService
 from components.mobile_timeline import render_mobile_timeline
+from components.venue_map_view import render_venue_map_expander
 from domain.policies import TimePolicy
 from infrastructure.json_repository import JsonScheduleRepository
 from views.detail_view import render_detail_view
@@ -68,7 +69,12 @@ if current_session_id:
     # 【詳細画面】セッション詳細・要旨フルビュー
     # -------------------------------------------------------------
     detail_result = service.get_session_detail(current_session_id)
-    render_detail_view(detail_result)
+    room_guide = (
+        service.get_room_guide_for_track(detail_result.session.track.code)
+        if detail_result.session
+        else None
+    )
+    render_detail_view(detail_result, room_guide=room_guide)
 
 else:
     # -------------------------------------------------------------
@@ -97,6 +103,9 @@ else:
         """,
         unsafe_allow_html=True,
     )
+
+    # 会場地図・部屋の行き方アコーディオン
+    render_venue_map_expander(service.get_venue_guide())
 
     # 日程タブの取得と選択
     days = service.get_days()
