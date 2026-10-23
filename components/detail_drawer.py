@@ -2,17 +2,17 @@
 プレゼンテーション層: セッション詳細＆講演要旨インスペクターコンポーネント
 """
 
-from typing import Optional
 import streamlit as st
+
 from domain.models import Session
 from domain.policies import CategoryVisualPolicy
 
 
-def render_session_inspector(session: Optional[Session], selected_time_str: str = "11:20"):
+def render_session_inspector(session: Session | None, selected_time_str: str = "11:20"):
     """画面右側のサイドインスペクターを描画"""
     if not session:
         st.markdown(
-            f"""
+            """
             <div style="background-color: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 6px; padding: 24px; text-align: center; color: #64748b;">
                 <p style="font-weight: 600; margin-bottom: 8px;">セッションが選択されていません</p>
                 <p style="font-size: 13px;">左側のタイムライン上のセッションブロックをクリックするか、一覧から選択すると要旨と登壇者詳細が表示されます。</p>
@@ -45,7 +45,7 @@ def render_session_inspector(session: Optional[Session], selected_time_str: str 
                 <span>⏱️ {session.start_time} – {session.end_time} ({session.duration_minutes}分)</span>
                 <span>📅 {session.day_label}</span>
             </div>
-            {f'<div style="margin-top: 8px; font-size: 12px; color: #64748b;"><strong>Organizer:</strong> {session.organizer}</div>' if session.organizer else ''}
+            {f'<div style="margin-top: 8px; font-size: 12px; color: #64748b;"><strong>Organizer:</strong> {session.organizer}</div>' if session.organizer else ""}
         </div>
         """,
         unsafe_allow_html=True,
@@ -67,7 +67,7 @@ def render_session_inspector(session: Optional[Session], selected_time_str: str 
         )
 
         for idx, talk in enumerate(session.talks):
-            with st.expander(f"【講演{idx+1}】{talk.title}", expanded=(idx == 0)):
+            with st.expander(f"【講演{idx + 1}】{talk.title}", expanded=(idx == 0)):
                 st.markdown(
                     f"""
                     <div style="font-size: 13px; margin-bottom: 6px;">
@@ -85,7 +85,10 @@ def render_session_inspector(session: Optional[Session], selected_time_str: str 
                         f"<span style='background:#f1f5f9; color:#475569; padding:2px 6px; border-radius:3px; font-size:10px; font-family:monospace;'>#{t}</span>"
                         for t in talk.tags
                     )
-                    st.markdown(f"<div style='margin-bottom: 8px;'>{tags_html}</div>", unsafe_allow_html=True)
+                    st.markdown(
+                        f"<div style='margin-bottom: 8px;'>{tags_html}</div>",
+                        unsafe_allow_html=True,
+                    )
 
                 if talk.abstract:
                     st.markdown(
@@ -99,4 +102,6 @@ def render_session_inspector(session: Optional[Session], selected_time_str: str 
                 else:
                     st.caption("要旨の記載なし")
     else:
-        st.info("このセッションには個別の講演登録はありません（全体進行・オープニングまたはポスターコアタイム等）。")
+        st.info(
+            "このセッションには個別の講演登録はありません（全体進行・オープニングまたはポスターコアタイム等）。"
+        )

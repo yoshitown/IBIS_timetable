@@ -4,7 +4,9 @@
 """
 
 from pathlib import Path
+
 import streamlit as st
+
 from application.schedule_service import ScheduleService
 from components.mobile_timeline import render_mobile_timeline
 from domain.policies import TimePolicy
@@ -90,7 +92,9 @@ if "selected_day" not in st.session_state:
 selected_day = st.radio(
     "日程選択",
     options=list(day_options.keys()),
-    format_func=lambda x: day_options[x].split(":")[0] + " " + day_options[x].split(":")[1].split("(")[0].strip(),
+    format_func=lambda x: (
+        day_options[x].split(":")[0] + " " + day_options[x].split(":")[1].split("(")[0].strip()
+    ),
     horizontal=True,
     index=list(day_options.keys()).index(st.session_state["selected_day"])
     if st.session_state["selected_day"] in day_options
@@ -101,6 +105,11 @@ selected_day = st.radio(
 st.session_state["selected_day"] = selected_day
 
 # 6. コントロールバー (トラック/カテゴリフィルター & 検索 & 時刻シミュレーション)
+search_keyword = None
+selected_cat = "all"
+simulated_minutes = 680  # 11:20
+current_time_str = "11:20"
+
 with st.expander("⚙️ フィルター & 時刻シミュレーション", expanded=False):
     search_keyword = st.text_input(
         "🔍 登壇者・タイトル・要旨検索",
@@ -132,12 +141,7 @@ with st.expander("⚙️ フィルター & 時刻シミュレーション", expa
         )
         current_time_str = TimePolicy.minutes_to_time_str(simulated_minutes)
         st.caption(f"シミュレーション時刻: **{current_time_str} JST**")
-else:
-    # expanderを閉じた状態のデフォルト
-    search_keyword = None
-    selected_cat = "all"
-    simulated_minutes = 680  # 11:20
-    current_time_str = "11:20"
+
 
 # 7. アプリケーション層から絞り込み済みセッションを取得
 filtered_sessions = service.get_filtered_schedule(

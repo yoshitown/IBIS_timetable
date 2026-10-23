@@ -4,7 +4,8 @@
 
 import json
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
+
 from domain.models import Session, Speaker, Talk
 from domain.policies import TimePolicy
 
@@ -15,7 +16,7 @@ class JsonScheduleRepository:
     def __init__(self, file_path: Path):
         self.file_path = file_path
 
-    def load_all_sessions(self) -> List[Session]:
+    def load_all_sessions(self) -> list[Session]:
         """全日程のセッション一覧をドメインモデルとして読み込む"""
         if not self.file_path.exists():
             return []
@@ -27,14 +28,14 @@ class JsonScheduleRepository:
             print(f"Error loading {self.file_path}: {e}")
             return []
 
-        sessions: List[Session] = []
+        sessions: list[Session] = []
         for item in data.get("sessions", []):
             session = self._map_to_session(item)
             sessions.append(session)
 
         return sessions
 
-    def load_days(self) -> List[Dict[str, str]]:
+    def load_days(self) -> list[dict[str, str]]:
         """カンファレンスの日程メタデータ一覧を読み込む"""
         if not self.file_path.exists():
             return []
@@ -44,7 +45,7 @@ class JsonScheduleRepository:
         except Exception:
             return []
 
-    def _map_to_session(self, item: Dict[str, Any]) -> Session:
+    def _map_to_session(self, item: dict[str, Any]) -> Session:
         """JSON辞書からSessionドメインオブジェクトへマッピング"""
         start_time = item.get("start_time", "09:00")
         end_time = item.get("end_time", "10:00")
@@ -52,7 +53,7 @@ class JsonScheduleRepository:
         start_min = TimePolicy.time_str_to_minutes(start_time)
         end_min = TimePolicy.time_str_to_minutes(end_time)
 
-        talks: List[Talk] = []
+        talks: list[Talk] = []
         for t in item.get("talks", []):
             spk_data = t.get("speaker", {})
             speaker = Speaker(

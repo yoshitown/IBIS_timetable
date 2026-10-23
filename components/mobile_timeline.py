@@ -3,18 +3,18 @@
 スマートフォンでの片手操作・縦スクロールに特化したUIをレンダリングします。
 """
 
-from typing import List, Optional
 import streamlit as st
 import streamlit.components.v1 as components
+
 from domain.models import Session
 from domain.policies import CategoryVisualPolicy, TimePolicy
 
 
 def render_mobile_timeline(
-    sessions: List[Session],
+    sessions: list[Session],
     current_minutes: int,
     selected_day_label: str = "Day 2: 10/27 (火)",
-    ongoing_session: Optional[Session] = None,
+    ongoing_session: Session | None = None,
 ):
     """
     ユーザー提示のStitchモバイルUIデザインに準拠した垂直タイムラインを生成・レンダリング
@@ -54,7 +54,6 @@ def render_mobile_timeline(
 
         # スタイル設定
         style = CategoryVisualPolicy.get_style(s.category)
-        accent_hex = style["accent_hex"]
 
         # 左端ボーダー色
         border_color_class = "bg-primary"
@@ -83,7 +82,7 @@ def render_mobile_timeline(
         else:
             status_badge_html = f"""
             <span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm">
-                {style['label']}
+                {style["label"]}
             </span>
             """
 
@@ -93,13 +92,13 @@ def render_mobile_timeline(
             chips = []
             for idx, t in enumerate(s.talks[:4]):
                 chips.append(
-                    f'<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-body-sm text-body-sm">{idx+1}. {t.speaker.name} ({t.speaker.affiliation})</span>'
+                    f'<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-body-sm text-body-sm">{idx + 1}. {t.speaker.name} ({t.speaker.affiliation})</span>'
                 )
             speakers_chips_html = f"""
             <div class="flex flex-col gap-1 pt-1">
                 <span class="font-label-sm text-label-sm text-on-surface-variant font-medium">登壇者 ({len(s.talks)}件):</span>
                 <div class="flex flex-wrap gap-1.5">
-                    {''.join(chips)}
+                    {"".join(chips)}
                 </div>
             </div>
             """
@@ -122,7 +121,7 @@ def render_mobile_timeline(
                         <span class="material-symbols-outlined text-[16px] transition-transform group-open:rotate-180">expand_more</span>
                     </summary>
                     <p class="font-body-sm text-body-sm text-on-surface-variant pt-2 leading-relaxed">
-                        {s.abstract.replace(chr(10), '<br/>')}
+                        {s.abstract.replace(chr(10), "<br/>")}
                     </p>
                 </details>
             </div>
@@ -134,16 +133,16 @@ def render_mobile_timeline(
         <div class="relative flex items-start gap-space-md">
             <!-- Time Marker Node -->
             <div class="w-12 pt-1 flex flex-col items-end flex-shrink-0">
-                <span class="font-label-md text-label-md {'text-primary font-bold' if is_ongoing else 'text-on-surface font-semibold'}">{s.start_time}</span>
+                <span class="font-label-md text-label-md {"text-primary font-bold" if is_ongoing else "text-on-surface font-semibold"}">{s.start_time}</span>
                 <span class="font-label-sm text-label-sm text-outline">{s.end_time}</span>
             </div>
-            <div class="w-3 h-3 rounded-full {'bg-primary ring-4 ring-primary-fixed' if is_ongoing else 'bg-surface-container-highest'} mt-2 flex-shrink-0 z-10"></div>
-            
+            <div class="w-3 h-3 rounded-full {"bg-primary ring-4 ring-primary-fixed" if is_ongoing else "bg-surface-container-highest"} mt-2 flex-shrink-0 z-10"></div>
+
             <!-- Card Body -->
             <div class="flex-1 min-w-0">
                 <div class="relative rounded-xl bg-surface-container-lowest p-space-md shadow-sm hover:shadow-md transition-shadow flex flex-col gap-space-xs overflow-hidden border border-outline-variant/30">
                     <div class="absolute left-0 top-0 bottom-0 w-1.5 {border_color_class}"></div>
-                    
+
                     <div class="flex items-center justify-between gap-2">
                         <div class="flex items-center gap-1.5">
                             {status_badge_html}
@@ -291,7 +290,7 @@ def render_mobile_timeline(
         <div class="relative w-full px-2 pt-4">
             <!-- Continuous Timeline Axis Bar -->
             <div class="absolute left-[62px] top-6 bottom-4 w-0.5 bg-surface-container-highest"></div>
-            
+
             <div class="flex flex-col gap-y-6">
                 {timeline_blocks_html}
             </div>

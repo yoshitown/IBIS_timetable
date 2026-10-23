@@ -2,7 +2,6 @@
 ドメインポリシー層: 時刻計算、フィルタリング規則、カテゴリカラーマッピング等のビジネスルール
 """
 
-from typing import Dict, List, Optional
 from domain.models import Session
 
 
@@ -28,7 +27,7 @@ class TimePolicy:
 class CategoryVisualPolicy:
     """Stitchデザインシステムに準拠したセッションカテゴリのビジュアル仕様"""
 
-    PALETTE: Dict[str, Dict[str, str]] = {
+    PALETTE: dict[str, dict[str, str]] = {
         "os": {
             "label": "Organized Sessions (OS)",
             "badge_bg": "bg-primary-container",
@@ -80,7 +79,7 @@ class CategoryVisualPolicy:
     }
 
     @classmethod
-    def get_style(cls, category: str) -> Dict[str, str]:
+    def get_style(cls, category: str) -> dict[str, str]:
         return cls.PALETTE.get(category.lower(), cls.PALETTE["general"])
 
 
@@ -89,11 +88,11 @@ class FilterPolicy:
 
     @staticmethod
     def apply(
-        sessions: List[Session],
-        day: Optional[str] = None,
-        category: Optional[str] = None,
-        keyword: Optional[str] = None,
-    ) -> List[Session]:
+        sessions: list[Session],
+        day: str | None = None,
+        category: str | None = None,
+        keyword: str | None = None,
+    ) -> list[Session]:
         """日付、カテゴリ、検索語の複合条件を適用"""
         result = sessions
 

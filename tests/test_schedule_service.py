@@ -3,7 +3,9 @@
 """
 
 from pathlib import Path
+
 import pytest
+
 from application.schedule_service import ScheduleService
 from infrastructure.json_repository import JsonScheduleRepository
 
@@ -25,7 +27,10 @@ def test_service_load_and_filter(service: ScheduleService):
     # キーワード検索
     results = service.get_filtered_schedule(keyword="Christopher")
     assert len(results) >= 1
-    assert any("Rackauckas" in s.title or any("Christopher" in t.speaker.name for t in s.talks) for s in results)
+    assert any(
+        "Rackauckas" in s.title or any("Christopher" in t.speaker.name for t in s.talks)
+        for s in results
+    )
 
 
 def test_service_ongoing_session(service: ScheduleService):

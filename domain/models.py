@@ -3,12 +3,12 @@
 """
 
 from dataclasses import dataclass, field
-from typing import List, Optional
 
 
 @dataclass(frozen=True)
 class Speaker:
     """登壇者情報"""
+
     name: str
     affiliation: str
 
@@ -20,13 +20,14 @@ class Speaker:
 @dataclass(frozen=True)
 class Talk:
     """セッション内の個別講演情報"""
+
     title: str
     speaker: Speaker
     start_time: str
     end_time: str
-    abstract: Optional[str] = None
-    citations: List[str] = field(default_factory=list)
-    tags: List[str] = field(default_factory=list)
+    abstract: str | None = None
+    citations: list[str] = field(default_factory=list)
+    tags: list[str] = field(default_factory=list)
 
     def matches(self, keyword: str) -> bool:
         kw = keyword.lower()
@@ -40,6 +41,7 @@ class Talk:
 @dataclass(frozen=True)
 class Session:
     """タイムテーブル上のセッション枠（チュートリアル、企画セッション、招待講演など）"""
+
     session_id: str
     day: str  # 例: "2026-10-27"
     day_label: str  # 例: "Day 2: Oct 27 (Tue)"
@@ -50,10 +52,10 @@ class Session:
     end_time: str  # "12:00"
     start_minutes: int  # 600
     end_minutes: int  # 720
-    organizer: Optional[str] = None
-    talks: List[Talk] = field(default_factory=list)
-    abstract: Optional[str] = None
-    url: Optional[str] = None
+    organizer: str | None = None
+    talks: list[Talk] = field(default_factory=list)
+    abstract: str | None = None
+    url: str | None = None
 
     @property
     def duration_minutes(self) -> int:

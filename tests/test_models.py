@@ -2,9 +2,8 @@
 ドメインモデルおよびポリシー層の単体テスト
 """
 
-import pytest
 from domain.models import Session, Speaker, Talk
-from domain.policies import CategoryVisualPolicy, FilterPolicy, TimePolicy
+from domain.policies import FilterPolicy, TimePolicy
 
 
 def test_time_policy():
@@ -29,7 +28,7 @@ def test_session_ongoing_and_matching():
         start_time="10:00",
         end_time="10:30",
         abstract="統計力学のレプリカ法を用いた擬似ラベル解析。",
-        tags=["Replica", "Statistical Physics"]
+        tags=["Replica", "Statistical Physics"],
     )
     session = Session(
         session_id="os-1",
@@ -43,7 +42,7 @@ def test_session_ongoing_and_matching():
         start_minutes=600,
         end_minutes=720,
         organizer="今泉 允聡",
-        talks=[talk]
+        talks=[talk],
     )
 
     # 進行中判定 (10:00〜12:00)
@@ -70,7 +69,7 @@ def test_filter_policy():
         start_time="11:00",
         end_time="12:30",
         start_minutes=660,
-        end_minutes=750
+        end_minutes=750,
     )
     s2 = Session(
         session_id="s2",
@@ -82,7 +81,7 @@ def test_filter_policy():
         start_time="14:00",
         end_time="15:00",
         start_minutes=840,
-        end_minutes=900
+        end_minutes=900,
     )
     sessions = [s1, s2]
 

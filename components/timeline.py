@@ -2,19 +2,19 @@
 プレゼンテーション層: Stitchデザインシステム準拠のGanttタイムライン描画コンポーネント
 """
 
-from typing import List, Optional
 import streamlit as st
 import streamlit.components.v1 as components
+
 from domain.models import Session
 from domain.policies import CategoryVisualPolicy, TimePolicy
 
 
 def render_timeline_canvas(
-    sessions: List[Session],
+    sessions: list[Session],
     current_minutes: int,
     show_marker: bool = True,
-    selected_session_id: Optional[str] = None,
-) -> Optional[str]:
+    selected_session_id: str | None = None,
+) -> str | None:
     """
     タイムライン（Ganttチャート）を描画する。
     st.components.v1.html を使用することで、Markdownパーサーによるコードブロック誤判定を防ぎ、
@@ -35,7 +35,9 @@ def render_timeline_canvas(
     BASE_TOTAL_MIN = 600
 
     # 現在時刻インジケーターの位置計算 (パーセンテージ)
-    marker_percent = max(0.0, min(100.0, ((current_minutes - BASE_START_MIN) / BASE_TOTAL_MIN) * 100))
+    marker_percent = max(
+        0.0, min(100.0, ((current_minutes - BASE_START_MIN) / BASE_TOTAL_MIN) * 100)
+    )
 
     # 時間軸ヘッダー (09:00 - 19:00)
     time_headers = [f"{h:02d}:00" for h in range(9, 19)]
@@ -65,7 +67,7 @@ def render_timeline_canvas(
 
             style = CategoryVisualPolicy.get_style(s.category)
             accent = style["accent_hex"]
-            is_active = (s.session_id == selected_session_id)
+            is_active = s.session_id == selected_session_id
             is_ongoing = s.is_ongoing(current_minutes)
 
             card_classes = ["session-card"]
@@ -77,7 +79,7 @@ def render_timeline_canvas(
             live_badge = '<span class="badge-live">LIVE</span>' if is_ongoing else ""
 
             cards_html += f"""
-            <div class="{' '.join(card_classes)}" style="left: {left_pct}%; width: {width_pct}%; border-left-color: {accent};">
+            <div class="{" ".join(card_classes)}" style="left: {left_pct}%; width: {width_pct}%; border-left-color: {accent};">
                 <div class="card-time" style="color: {accent};">
                     {live_badge}<span>{s.start_time} - {s.end_time}</span>
                 </div>
@@ -291,7 +293,9 @@ def render_timeline_canvas(
     components.html(full_html, height=calculated_height, scrolling=True)
 
     # ユーザーがインタラクティブにセッションを選択できるようにする選択ウィジェット
-    session_options = {s.session_id: f"{s.start_time} - {s.end_time} | {s.title} ({s.track})" for s in sessions}
+    session_options = {
+        s.session_id: f"{s.start_time} - {s.end_time} | {s.title} ({s.track})" for s in sessions
+    }
     current_idx = 0
     if selected_session_id in session_options:
         current_idx = list(session_options.keys()).index(selected_session_id)
@@ -301,7 +305,7 @@ def render_timeline_canvas(
         options=list(session_options.keys()),
         index=current_idx,
         format_func=lambda k: session_options[k],
-        key="timeline_session_selector"
+        key="timeline_session_selector",
     )
 
     return selected_key

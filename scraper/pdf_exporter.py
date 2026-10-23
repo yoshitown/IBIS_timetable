@@ -5,10 +5,11 @@ IBIS2026 プログラム・要旨 PDFエクスポートモジュール
 
 import os
 from datetime import datetime
-from typing import Any, Dict, List
+from typing import Any
+
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
-from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+from reportlab.lib.styles import ParagraphStyle
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.cidfonts import UnicodeCIDFont
 from reportlab.pdfgen import canvas
@@ -19,8 +20,6 @@ from reportlab.platypus import (
     Paragraph,
     SimpleDocTemplate,
     Spacer,
-    Table,
-    TableStyle,
 )
 
 # 日本語フォントの登録 (ReportLab標準のUnicode CIDフォント)
@@ -70,7 +69,7 @@ class NumberedCanvas(canvas.Canvas):
 
 
 def create_abstracts_pdf(
-    data: List[Dict[str, Any]],
+    data: list[dict[str, Any]],
     output_filepath: str = "data/ibis2026_program_abstracts.pdf",
 ) -> str:
     """収集データを整形してPDFファイルを生成"""
@@ -84,8 +83,6 @@ def create_abstracts_pdf(
         topMargin=46,
         bottomMargin=46,
     )
-
-    styles = getSampleStyleSheet()
 
     # カスタムスタイル
     cover_title_style = ParagraphStyle(
@@ -166,7 +163,10 @@ def create_abstracts_pdf(
     story.append(Spacer(1, 120))
     story.append(Paragraph("IBIS2026", cover_title_style))
     story.append(
-        Paragraph("第29回 情報論的学習理論ワークショップ<br/>プログラム概要・講演要旨集", cover_title_style)
+        Paragraph(
+            "第29回 情報論的学習理論ワークショップ<br/>プログラム概要・講演要旨集",
+            cover_title_style,
+        )
     )
     story.append(
         HRFlowable(
@@ -220,9 +220,7 @@ def create_abstracts_pdf(
             raw_title = f"{current_category} 詳細"
 
         # XMLタグやエスケープ
-        safe_title = (
-            raw_title.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
-        )
+        safe_title = raw_title.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
         block_items.append(Paragraph(f"● {safe_title}", session_title_style))
 
         url = item.get("url", "")
