@@ -153,3 +153,34 @@ class SessionDetailResult:
     navigation: Optional[SessionNavigation] = None
     is_found: bool = True
     error_message: Optional[str] = None
+
+
+@dataclass(frozen=True)
+class RoomGuide:
+    """各部屋・トラックの所在および行き方ガイド値オブジェクト"""
+
+    track_code: str
+    room_name: str
+    building: str
+    floor: str
+    access_instruction: str
+    note: Optional[str] = None
+
+
+@dataclass(frozen=True)
+class VenueGuide:
+    """会場全体・フロアマップ情報のドメインエンティティ"""
+
+    name: str
+    address: str
+    station_access: str
+    map_images: dict[str, str]
+    rooms: List[RoomGuide]
+
+    def get_room_guide(self, track_code: str) -> Optional[RoomGuide]:
+        """トラックコードまたは部屋名の一部から該当する部屋ガイドを取得"""
+        norm_code = track_code.lower()
+        for r in self.rooms:
+            if r.track_code.lower() in norm_code or norm_code in r.track_code.lower():
+                return r
+        return None
