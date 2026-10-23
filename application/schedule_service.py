@@ -199,6 +199,7 @@ class ScheduleService:
             address="埼玉県さいたま市大宮区桜木町1-7-5",
             station_access="JR・東武野田線・ニューシャトル「大宮駅」西口より歩行者デッキ直結 徒歩約3分",
             map_images={
+                "overview": "data/maps/overview_diagram.png",
                 "route": "data/maps/access_hall_intl.png",
                 "floor": "data/maps/floor_hall_4f.jpg",
                 "building": "data/maps/sonic_city_building_guide.png",

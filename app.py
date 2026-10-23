@@ -9,10 +9,10 @@ import streamlit as st
 
 from application.schedule_service import ScheduleService
 from components.mobile_timeline import render_mobile_timeline
-from components.venue_map_view import render_venue_map_expander
 from domain.policies import TimePolicy
 from infrastructure.json_repository import JsonScheduleRepository
 from views.detail_view import render_detail_view
+from views.venue_view import render_venue_view
 
 # 1. ページ設定 (モバイル優先・レスポンシブ)
 st.set_page_config(
@@ -60,9 +60,10 @@ st.markdown(
 )
 
 # =========================================================================
-# 4. ルーティング (境界防御: session パラメータの有無で画面をディスパッチ)
+# 4. ルーティング (境界防御: session / page パラメータで画面をディスパッチ)
 # =========================================================================
 current_session_id = st.query_params.get("session")
+current_page = st.query_params.get("page")
 
 if current_session_id:
     # -------------------------------------------------------------
@@ -75,6 +76,13 @@ if current_session_id:
         else None
     )
     render_detail_view(detail_result, room_guide=room_guide)
+
+elif current_page == "venue":
+    # -------------------------------------------------------------
+    # 【会場案内画面】会場地図・各部屋への行き方専用フルビュー
+    # -------------------------------------------------------------
+    venue_guide = service.get_venue_guide()
+    render_venue_view(venue_guide)
 
 else:
     # -------------------------------------------------------------
@@ -104,8 +112,12 @@ else:
         unsafe_allow_html=True,
     )
 
-    # 会場地図・部屋の行き方アコーディオン
-    render_venue_map_expander(service.get_venue_guide())
+    # 会場地図・部屋の行き方専用ページへの画面遷移ボタン
+    if st.button("🗺️ 会場地図・各部屋への行き方 (大宮ソニックシティ) ➔", use_container_width=True):
+        st.query_params["page"] = "venue"
+        st.rerun()
+
+    st.markdown("<div style='height: 8px;'></div>", unsafe_allow_html=True)
 
     # 日程タブの取得と選択
     days = service.get_days()
