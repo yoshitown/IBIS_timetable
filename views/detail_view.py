@@ -3,13 +3,19 @@
 各セッションの深い情報（全講演アブストラクト、登壇者、タグ、参考文献、前後ナビゲーション）をレンダリングします。
 """
 
+from typing import Optional
+
 import streamlit as st
 
-from domain.models import SessionDetailResult
+from components.venue_map_view import render_room_inline_badge
+from domain.models import RoomGuide, SessionDetailResult
 from domain.policies import CategoryVisualPolicy
 
 
-def render_detail_view(result: SessionDetailResult):
+def render_detail_view(
+    result: SessionDetailResult,
+    room_guide: Optional[RoomGuide] = None,
+):
     """セッション詳細画面を描画"""
 
     # 1. 境界防御: セッションが見つからない場合
@@ -78,6 +84,10 @@ def render_detail_view(result: SessionDetailResult):
         """,
         unsafe_allow_html=True,
     )
+
+    # 部屋アクセス案内 (該当トラックのRoomGuideが存在する場合)
+    if room_guide:
+        render_room_inline_badge(room_guide)
 
     # 4. セッション趣旨・概要 (セッション全体のもの)
     if session.abstract:
