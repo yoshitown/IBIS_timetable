@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><title>IBIS2026 - Information-Based Induction Sciences Workshop</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500;600&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}@keyframes pulse-fast{0%,100%{opacity:1;}50%{opacity:0.3;}}.animate-pulse-fast{animation:pulse-fast 1.6s cubic-bezier(0.4,0,0.6,1) infinite;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "secondary-container": "#fe932c", "tertiary-container": "#006c63", "on-background": "#131b2e", "on-primary": "#ffffff", "inverse-primary": "#c3c0ff", "surface-bright": "#faf8ff", "primary-fixed": "#e2dfff", "on-primary-container": "#dad7ff", "on-error-container": "#93000a", "surface": "#faf8ff", "surface-tint": "#4d44e3", "on-tertiary-fixed": "#00201d", "surface-container": "#eaedff", "on-secondary-fixed": "#2f1500", "on-error": "#ffffff", "on-surface": "#131b2e", "tertiary-fixed": "#89f5e7", "error": "#ba1a1a", "surface-container-highest": "#dae2fd", "primary-fixed-dim": "#c3c0ff", "error-container": "#ffdad6", "surface-variant": "#dae2fd", "on-surface-variant": "#464555", "primary-container": "#4f46e5", "on-tertiary": "#ffffff", "on-primary-fixed-variant": "#3323cc", "on-tertiary-container": "#81eddf", "on-primary-fixed": "#0f0069", "background": "#faf8ff", "on-tertiary-fixed-variant": "#005049", "tertiary": "#00524b", "inverse-on-surface": "#eef0ff", "surface-container-lowest": "#ffffff", "on-secondary": "#ffffff", "surface-container-high": "#e2e7ff", "on-secondary-fixed-variant": "#6e3900", "secondary-fixed-dim": "#ffb77d", "secondary-fixed": "#ffdcc3", "surface-dim": "#d2d9f4", "outline": "#777587", "primary": "#3525cd", "tertiary-fixed-dim": "#6bd8cb", "outline-variant": "#c7c4d8", "on-secondary-container": "#663500", "secondary": "#904d00", "inverse-surface": "#283044", "surface-container-low": "#f2f3ff" }, borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, spacing: { "margin": "1.5rem", "space-xl": "2rem", "gutter-mobile": "0.75rem", "space-lg": "1.25rem", "space-xs": "0.25rem", "space-sm": "0.5rem", "margin-mobile": "0.75rem", "gutter": "1rem", "space-md": "0.75rem" }, fontFamily: { "headline-lg": ["Inter"], "label-sm": ["JetBrains Mono"], "headline-xl": ["Inter"], "label-md": ["JetBrains Mono"], "label-lg": ["JetBrains Mono"], "body-lg": ["Inter"], "body-sm": ["Inter"], "headline-xl-mobile": ["Inter"], "headline-lg-mobile": ["Inter"], "headline-md": ["Inter"], "body-md": ["Inter"] }, fontSize: { "headline-lg": ["24px", { lineHeight: "32px", fontWeight: "600" }], "label-sm": ["10px", { lineHeight: "12px", fontWeight: "600" }], "headline-xl": ["32px", { lineHeight: "40px", fontWeight: "700" }], "label-md": ["11px", { lineHeight: "14px", fontWeight: "500" }], "label-lg": ["13px", { lineHeight: "18px", fontWeight: "500" }], "body-lg": ["15px", { lineHeight: "22px", fontWeight: "400" }], "body-sm": ["12px", { lineHeight: "16px", fontWeight: "400" }], "headline-xl-mobile": ["24px", { lineHeight: "32px", fontWeight: "700" }], "headline-lg-mobile": ["20px", { lineHeight: "28px", fontWeight: "600" }], "headline-md": ["18px", { lineHeight: "24px", fontWeight: "600" }], "body-md": ["13px", { lineHeight: "18px", fontWeight: "400" }] } } } };</script></head><body class="bg-background font-body-md text-on-surface antialiased"><header class="fixed top-0 left-0 right-0 z-50 bg-inverse-surface text-inverse-on-surface shadow-[0_4px_20px_-2px_rgba(15,23,42,0.12)]"><div class="h-28 w-full max-w-[1600px] mx-auto px-margin flex flex-col justify-between py-space-sm"><div class="flex items-center justify-between gap-gutter"><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs bg-primary px-space-sm py-space-xs rounded text-on-primary font-headline-md tracking-tight font-bold"><span class="material-symbols-outlined text-[20px]">hub</span><span>IBIS2026</span></div><div class="flex flex-col"><div class="flex items-center gap-space-sm"><span class="font-headline-md text-headline-md text-inverse-on-surface leading-tight font-semibold">Timeline &amp; Agenda Viewer</span><span class="font-label-sm text-label-sm px-space-xs py-0.5 rounded bg-surface-container/20 text-inverse-on-surface tracking-wider uppercase">Workshop</span></div><span class="font-body-sm text-body-sm text-outline-variant">October 26–29, 2026 • Sonic City Hall, Omiya, Saitama</span></div></div><div class="hidden lg:flex items-center gap-space-md flex-1 max-w-xl mx-gutter"><div class="flex items-center gap-space-xs bg-surface-container-lowest/10 px-space-sm py-space-xs rounded font-label-md text-label-md text-inverse-on-surface whitespace-nowrap"><span class="w-2 h-2 rounded-full bg-tertiary-fixed animate-pulse-fast"></span><span>Live: Day 2</span></div><div class="relative flex-1"><span class="material-symbols-outlined absolute left- space-sm top-1/2 -translate-y-1/2 text-outline-variant text-[18px]">search</span><input class="w-full bg-surface-container-lowest/15 focus:bg-surface-container-lowest focus:text-on-surface text-inverse-on-surface placeholder:text-outline-variant pl-8 pr-3 py-1.5 rounded font-body-sm text-body-sm transition-all focus:outline-none" placeholder="Filter by speaker (e.g. Imaizumi), title, session..." type="text"/></div></div><div class="flex items-center gap-space-sm"><div class="hidden sm:flex items-center gap-space-xs px-space-sm py-space-xs rounded bg-surface-container-lowest/10 font-label-md text-label-md text-inverse-on-surface"><span class="material-symbols-outlined text-[16px] text-tertiary-fixed">schedule</span><span>JST (UTC+9)</span></div><button class="flex items-center gap-space-xs px-space-sm py-space-xs rounded bg-surface-container-lowest/10 hover:bg-surface-container-lowest/20 text-inverse-on-surface font-label-md text-label-md transition-colors" type="button"><span class="material-symbols-outlined text-[16px]">file_download</span><span class="hidden md:inline">Export PDF</span></button><button class="flex items-center gap-space-xs px-space-sm py-space-xs rounded bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md transition-colors" type="button"><span class="material-symbols-outlined text-[16px]">sync</span><span class="hidden md:inline">Sync Scraper</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div><div class="flex items-center justify-between gap-gutter pt-space-xs"><nav class="flex items-center gap-space-xs bg-surface-container-lowest/10 p-0.5 rounded" data-active-classes="bg-surface-container-lowest text-on-surface font-semibold"><a class="px-space-sm py-1 rounded font-label-md text-label-md text-inverse-on-surface hover:text-surface-bright transition-colors" data-path="timeline-day-1" href="#">Day 1: Oct 26 (Mon)</a><a aria-current="page" class="px-space-sm py-1 rounded transition-colors bg-surface-container-lowest text-on-surface font-semibold" data-path="agenda-viewer" href="#">Day 2: Oct 27 (Tue)</a><a class="px-space-sm py-1 rounded font-label-md text-label-md text-inverse-on-surface hover:text-surface-bright transition-colors" data-path="timeline-day-3" href="#">Day 3: Oct 28 (Wed)</a><a class="px-space-sm py-1 rounded font-label-md text-label-md text-inverse-on-surface hover:text-surface-bright transition-colors" data-path="timeline-day-4" href="#">Day 4: Oct 29 (Thu)</a></nav><div class="hidden md:flex items-center gap-space-md font-label-md text-label-md"><div class="flex items-center gap-space-xs text-inverse-on-surface"><span class="material-symbols-outlined text-[18px] text-tertiary-fixed">sensors</span><span>Simulation Clock:</span><span class="bg-surface-container-lowest/20 px-space-xs py-0.5 rounded font-label-md text-surface-bright font-bold">11:20 JST</span></div><div class="flex items-center gap-space-xs text-outline-variant"><span class="material-symbols-outlined text-[16px] text-secondary-container">timer</span><span>Track Delta: +0m</span></div></div></div></div></header><main class="w-full max-w-[1600px] mx-auto px-margin pt-28 bg-background min-h-screen"><div class="flex flex-col w-full pb-16">
+<!-- CONTROL STRIP & FILTER BAR (Secondary Header Matrix) -->
+<section class="w-full bg-surface-container-low shadow-sm rounded-lg p-space-md mb-space-md">
+<div class="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-space-md">
+<!-- Left side: Session Category Filters & Legend -->
+<div class="flex flex-wrap items-center gap-space-xs">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider mr-space-xs">Filter Type:</span>
+<button class="filter-chip active px-space-sm py-1 rounded bg-primary text-on-primary font-label-md text-label-md shadow-sm transition-all flex items-center gap-1" data-filter="all" type="button">
+<span class="w-1.5 h-1.5 rounded-full bg-surface-bright"></span>All Sessions (14)
+        </button>
+<button class="filter-chip px-space-sm py-1 rounded bg-surface text-on-surface hover:bg-surface-container font-label-md text-label-md transition-all flex items-center gap-1.5 shadow-sm" data-filter="os" type="button">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>Organized Sessions (OS)
+        </button>
+<button class="filter-chip px-space-sm py-1 rounded bg-surface text-on-surface hover:bg-surface-container font-label-md text-label-md transition-all flex items-center gap-1.5 shadow-sm" data-filter="invited" type="button">
+<span class="w-2 h-2 rounded-full bg-secondary-container"></span>Invited Talks
+        </button>
+<button class="filter-chip px-space-sm py-1 rounded bg-surface text-on-surface hover:bg-surface-container font-label-md text-label-md transition-all flex items-center gap-1.5 shadow-sm" data-filter="tutorial" type="button">
+<span class="w-2 h-2 rounded-full bg-surface-tint"></span>Tutorials
+        </button>
+<button class="filter-chip px-space-sm py-1 rounded bg-surface text-on-surface hover:bg-surface-container font-label-md text-label-md transition-all flex items-center gap-1.5 shadow-sm" data-filter="poster" type="button">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>Posters (68)
+        </button>
+<button class="filter-chip px-space-sm py-1 rounded bg-surface text-on-surface hover:bg-surface-container font-label-md text-label-md transition-all flex items-center gap-1.5 shadow-sm" data-filter="panel" type="button">
+<span class="w-2 h-2 rounded-full bg-primary-fixed-dim"></span>Panels
+        </button>
+</div>
+<!-- Right side: Scrubber, Marker Toggle & Zoom Matrix -->
+<div class="flex flex-wrap items-center gap-space-md w-full xl:w-auto justify-between xl:justify-end">
+<!-- Live Indicator toggle -->
+<label class="flex items-center gap-space-xs cursor-pointer select-none">
+<input checked="" class="w-4 h-4 accent-error rounded cursor-pointer" id="toggle-marker" type="checkbox"/>
+<span class="font-label-md text-label-md text-on-surface font-medium flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-error animate-pulse"></span>Temporal Slice
+          </span>
+</label>
+<!-- Time scrubber simulation -->
+<div class="flex items-center gap-space-xs bg-surface px-space-sm py-1 rounded shadow-sm">
+<span class="material-symbols-outlined text-outline text-[16px]">timelapse</span>
+<span class="font-label-sm text-label-sm text-outline">Simulate:</span>
+<input class="w-28 sm:w-36 accent-error cursor-pointer h-1.5 bg-surface-container-highest rounded-lg" id="time-scrubber" max="1140" min="540" step="5" type="range" value="680"/>
+<span class="font-label-md text-label-md text-error font-bold px-1 rounded bg-error-container/40 min-w-[58px] text-center" id="scrubber-display">11:20 AM</span>
+</div>
+<!-- Zoom Controls -->
+<div class="flex items-center bg-surface p-0.5 rounded shadow-sm">
+<button class="p-1 hover:bg-surface-container rounded text-on-surface transition-colors" id="zoom-out" title="Compress Timeline">
+<span class="material-symbols-outlined text-[18px]">zoom_out</span>
+</button>
+<span class="font-label-sm text-label-sm text-outline px-space-xs min-w-[38px] text-center" id="zoom-level">100%</span>
+<button class="p-1 hover:bg-surface-container rounded text-on-surface transition-colors" id="zoom-in" title="Expand Timeline">
+<span class="material-symbols-outlined text-[18px]">zoom_in</span>
+</button>
+<button class="px-space-xs py-0.5 ml-0.5 hover:bg-surface-container rounded text-outline hover:text-on-surface font-label-sm text-label-sm transition-colors" id="zoom-fit" title="Reset View">Fit</button>
+</div>
+</div>
+</div>
+<!-- Active Filter Summary Breadcrumb -->
+<div class="mt-space-sm pt-space-xs flex items-center justify-between text-outline">
+<div class="flex items-center gap-space-sm font-label-md text-label-md">
+<span class="text-tertiary-container font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px]">meeting_room</span>3 Venues Active
+        </span>
+<span class="text-outline-variant">•</span>
+<span>Sonic City Hall Main + International Hall + Civic Gallery</span>
+<span class="text-outline-variant">•</span>
+<span class="text-primary font-medium">Auto-synced with JST atomic clock (+0.0s)</span>
+</div>
+<div class="hidden md:flex items-center gap-space-xs font-label-sm text-label-sm text-outline">
+<span class="inline-block w-2.5 h-2.5 rounded bg-primary-container"></span>
+<span>Click card to inspect talk abstracts &amp; live slido</span>
+</div>
+</div>
+</section>
+<!-- MAIN VIEWPORT GRID: GANTT CHART (9 COLUMNS EQUIV) + SIDE INSPECTOR (3 COLUMNS EQUIV) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-md items-start">
+<!-- LEFT & CENTER: GANTT SCHEDULE CANVAS (8-9 Cols) -->
+<div class="lg:col-span-8 xl:col-span-9 bg-surface rounded-lg shadow-sm p-space-md overflow-hidden relative">
+<!-- Top Track Legend / Capacity Indicators -->
+<div class="flex items-center justify-between mb-space-sm pb-space-xs">
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-1 font-label-md text-label-md text-on-surface">
+<span class="font-bold text-headline-md text-headline-md">Oct 27</span>
+<span class="bg-surface-container px-space-xs py-0.5 rounded font-label-sm text-label-sm text-outline font-semibold">TUESDAY</span>
+</div>
+<span class="font-body-sm text-body-sm text-outline hidden sm:inline">10 Hours Continuous Programming</span>
+</div>
+<div class="flex items-center gap-space-md font-label-sm text-label-sm text-outline">
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-error"></span>Live Now</span>
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-secondary-container"></span>Keynote</span>
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-tertiary"></span>Poster Session</span>
+</div>
+</div>
+<!-- HORIZONTAL SCROLL CONTAINER FOR TIMELINE -->
+<div class="overflow-x-auto relative select-none w-full pb-4" id="timeline-scroll-container">
+<!-- Inner scalable canvas: Base 1200px width min (representing 600 mins = 10 hrs, 2px/min) -->
+<div class="min-w-[1250px] relative transition-[width] duration-150" id="gantt-canvas">
+<!-- 1. TIME AXIS RULER -->
+<div class="flex items-stretch bg-surface-container-low rounded-t sticky top-0 z-30 h-10 shadow-sm">
+<!-- Fixed room label header spacer -->
+<div class="w-48 flex-shrink-0 px-space-sm flex items-center justify-between bg-surface-container font-label-md text-label-md text-on-surface-variant font-bold shadow-sm">
+<span>VENUE / TRACK</span>
+<span class="material-symbols-outlined text-[16px] text-outline">tune</span>
+</div>
+<!-- Time graduations 09:00 - 19:00 (10 segments of 60 mins) -->
+<div class="flex-1 grid grid-cols-10 relative">
+<!-- Column labels -->
+<div class="flex flex-col justify-center px-1 font-label-md text-label-md text-on-surface-variant font-semibold">
+<span class="leading-none">09:00</span>
+<span class="font-label-sm text-[9px] text-outline">Morning</span>
+</div>
+<div class="flex flex-col justify-center px-1 font-label-md text-label-md text-on-surface-variant font-semibold">
+<span class="leading-none">10:00</span>
+<span class="font-label-sm text-[9px] text-outline">Sessions</span>
+</div>
+<div class="flex flex-col justify-center px-1 font-label-md text-label-md text-on-surface-variant font-semibold">
+<span class="leading-none">11:00</span>
+<span class="font-label-sm text-[9px] text-error font-bold">Live Window</span>
+</div>
+<div class="flex flex-col justify-center px-1 font-label-md text-label-md text-on-surface-variant font-semibold">
+<span class="leading-none">12:00</span>
+<span class="font-label-sm text-[9px] text-outline">Lunch</span>
+</div>
+<div class="flex flex-col justify-center px-1 font-label-md text-label-md text-on-surface-variant font-semibold">
+<span class="leading-none">13:00</span>
+<span class="font-label-sm text-[9px] text-outline">Midday</span>
+</div>
+<div class="flex flex-col justify-center px-1 font-label-md text-label-md text-on-surface-variant font-semibold">
+<span class="leading-none">14:00</span>
+<span class="font-label-sm text-[9px] text-secondary">Keynote</span>
+</div>
+<div class="flex flex-col justify-center px-1 font-label-md text-label-md text-on-surface-variant font-semibold">
+<span class="leading-none">15:00</span>
+<span class="font-label-sm text-[9px] text-outline">Afternoon</span>
+</div>
+<div class="flex flex-col justify-center px-1 font-label-md text-label-md text-on-surface-variant font-semibold">
+<span class="leading-none">16:00</span>
+<span class="font-label-sm text-[9px] text-tertiary">Posters</span>
+</div>
+<div class="flex flex-col justify-center px-1 font-label-md text-label-md text-on-surface-variant font-semibold">
+<span class="leading-none">17:00</span>
+<span class="font-label-sm text-[9px] text-outline">Evening</span>
+</div>
+<div class="flex flex-col justify-center px-1 font-label-md text-label-md text-on-surface-variant font-semibold">
+<span class="leading-none">18:00</span>
+<span class="font-label-sm text-[9px] text-outline">Social/Mix</span>
+</div>
+</div>
+</div>
+<!-- TIME GRID SUB-TICKS (Background Layer) -->
+<div class="absolute left-48 right-0 top-10 bottom-0 pointer-events-none flex z-0">
+<!-- 10 hour columns with half-hour subdivisions -->
+<div class="flex-1 bg-surface-container-low/20"></div>
+<div class="flex-1 bg-surface-container-low/40"></div>
+<div class="flex-1 bg-surface-container-low/20"></div>
+<div class="flex-1 bg-surface-container-low/40"></div>
+<div class="flex-1 bg-surface-container-low/20"></div>
+<div class="flex-1 bg-surface-container-low/40"></div>
+<div class="flex-1 bg-surface-container-low/20"></div>
+<div class="flex-1 bg-surface-container-low/40"></div>
+<div class="flex-1 bg-surface-container-low/20"></div>
+<div class="flex-1 bg-surface-container-low/40"></div>
+</div>
+<!-- 2. CURRENT TIME INDICATOR (RED LINE - 11:20 AM JST) -->
+<!-- 11:20 AM is 140 minutes past 09:00 out of 600 total minutes = 23.333% from left -->
+<div class="absolute top-0 bottom-0 pointer-events-none z-40 transition-all duration-300" id="live-time-indicator" style="left: calc(12rem + (100% - 12rem) * 0.2333);">
+<!-- Top Pin Badge with Ping -->
+<div class="relative -translate-x-1/2 flex flex-col items-center pointer-events-auto cursor-pointer group">
+<div class="bg-error text-on-error font-label-sm text-label-sm px-2 py-0.5 rounded shadow-md font-bold flex items-center gap-1.5 whitespace-nowrap">
+<span class="w-1.5 h-1.5 rounded-full bg-surface-bright animate-ping"></span>
+<span id="current-time-label">11:20 JST</span>
+</div>
+<div class="w-0 h-0 border-x-4 border-x-transparent border-t-4 border-t-error"></div>
+<!-- Hover Micro Tooltip -->
+<div class="opacity-0 group-hover:opacity-100 transition-opacity absolute top-6 bg-inverse-surface text-inverse-on-surface px-space-sm py-1 rounded shadow-xl font-label-sm text-label-sm whitespace-nowrap z-50">
+                Track A: OS1 (84% Full) • Track B: Tutorial 2 (Ongoing)
+              </div>
+</div>
+<!-- Glowing Vertical Bar -->
+<div class="w-[2px] h-full bg-error mx-auto shadow-[0_0_10px_rgba(186,26,26,0.85)]"></div>
+</div>
+<!-- 3. TRACK ROWS MATRIX -->
+<div class="relative z-10 flex flex-col gap-space-sm py-space-sm">
+<!-- ================= TRACK A ================= -->
+<div class="track-row flex items-stretch min-h-[148px] bg-surface-container-lowest rounded shadow-sm hover:shadow transition-shadow overflow-hidden group">
+<!-- Track Label Sidebar -->
+<div class="w-48 flex-shrink-0 p-space-sm bg-surface-container-low flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-1 mb-1">
+<span class="w-2.5 h-2.5 rounded-sm bg-primary"></span>
+<span class="font-headline-md text-headline-md text-on-surface font-bold">Track A</span>
+</div>
+<div class="font-label-md text-label-md text-on-surface-variant font-medium">Main Hall (2F)</div>
+<div class="font-label-sm text-label-sm text-outline mt-0.5">Capacity: 800 seats</div>
+</div>
+<div class="flex items-center justify-between text-outline">
+<span class="font-label-sm text-label-sm text-tertiary-container flex items-center gap-0.5 font-semibold">
+<span class="material-symbols-outlined text-[14px]">videocam</span> 4K Live
+                  </span>
+<span class="font-label-sm text-label-sm bg-surface-container px-1 rounded">Hall A</span>
+</div>
+</div>
+<!-- Track A Timeline Canvas (600 mins total) -->
+<div class="flex-1 relative h-full py-1.5 px-0.5">
+<!-- 09:15 - 09:45: Opening Remarks (15m offset -> 2.5%, 30m width -> 5%) -->
+<div class="session-card absolute top-2 bottom-2 rounded bg-surface-container text-on-surface p-space-xs flex flex-col justify-between cursor-pointer hover:bg-surface-container-high transition-colors shadow-sm" onclick="inspectSession('opening')" style="left: 2.5%; width: 5%;">
+<div class="flex items-center justify-between font-label-sm text-[9px] text-outline">
+<span>09:15-09:45</span>
+</div>
+<div class="font-label-sm text-label-sm font-bold truncate text-on-surface">Opening Remarks</div>
+<div class="font-label-sm text-[9px] text-outline truncate">IBIS Steering</div>
+</div>
+<!-- 10:00 - 12:00: OS1: Physics and Machine Learning Theory (60m offset -> 10%, 120m width -> 20%) -->
+<!-- ACTIVE / ONGOING SESSION -->
+<div class="session-card absolute top-1.5 bottom-1.5 rounded-lg bg-primary-container text-on-primary p-space-sm flex flex-col justify-between cursor-pointer shadow-md hover:shadow-lg transition-transform hover:-translate-y-0.5 z-20" onclick="inspectSession('os1')" style="left: 10%; width: 20%;">
+<div>
+<div class="flex items-center justify-between mb-1">
+<div class="flex items-center gap-1.5">
+<span class="bg-error text-on-error font-label-sm text-[9px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider animate-pulse flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-white"></span>LIVE NOW
+                        </span>
+<span class="font-label-sm text-label-sm text-on-primary-container font-mono">10:00 - 12:00</span>
+</div>
+<span class="font-label-sm text-label-sm bg-surface-container-lowest/20 px-1 rounded text-on-primary">OS1</span>
+</div>
+<h4 class="font-headline-md text-body-lg font-bold text-on-primary leading-tight truncate">
+                      Physics and Machine Learning Theory
+                    </h4>
+<p class="font-label-sm text-label-sm text-on-primary-container line-clamp-1 mt-0.5">
+                      M. Imaizumi • K. Fukumizu • T. Suzuki • S. Maeda
+                    </p>
+</div>
+<div class="flex items-center justify-between pt-1 font-label-sm text-[10px] text-on-primary-container">
+<div class="flex items-center gap-2">
+<span class="flex items-center gap-0.5"><span class="material-symbols-outlined text-[13px]">person</span>672/800 (84%)</span>
+<span class="hidden sm:inline bg-surface-bright/20 px-1 rounded">4 Talks</span>
+</div>
+<span class="material-symbols-outlined text-[16px] text-on-primary">open_in_new</span>
+</div>
+</div>
+<!-- 12:00 - 13:30: Lunch Break & Industry Networking (180m offset -> 30%, 90m width -> 15%) -->
+<div class="absolute top-3 bottom-3 rounded bg-surface-container-low/60 text-outline p-space-xs flex items-center justify-center cursor-default pattern-diagonal" style="left: 30%; width: 15%;">
+<span class="font-label-sm text-label-sm font-medium tracking-wide flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-[15px]">restaurant</span> Lunch &amp; Industry Lounge
+                  </span>
+</div>
+<!-- 14:00 - 15:00: Invited Talk 1: Christopher Rackauckas (MIT) (300m offset -> 50%, 60m width -> 10%) -->
+<!-- KEYNOTE HIGHLIGHT -->
+<div class="session-card absolute top-1.5 bottom-1.5 rounded-lg bg-secondary-container text-on-secondary-container p-space-sm flex flex-col justify-between cursor-pointer shadow-md hover:shadow-lg transition-transform hover:-translate-y-0.5" onclick="inspectSession('keynote1')" style="left: 50%; width: 10%;">
+<div>
+<div class="flex items-center justify-between mb-1">
+<span class="bg-surface-container-lowest text-secondary font-label-sm text-[9px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">
+                        Keynote
+                      </span>
+<span class="font-label-sm text-[10px] text-on-secondary-container font-mono">14:00-15:00</span>
+</div>
+<h4 class="font-headline-md text-label-lg font-bold text-on-secondary-container leading-tight line-clamp-2">
+                      SciML: Scientific Machine Learning
+                    </h4>
+<p class="font-label-sm text-label-sm font-semibold text-on-secondary-container truncate mt-0.5">
+                      C. Rackauckas (MIT)
+                    </p>
+</div>
+<div class="flex items-center justify-between font-label-sm text-[9px] text-on-secondary-container/80 pt-1">
+<span>Chair: Prof. Sugiyama</span>
+<span class="material-symbols-outlined text-[14px]">star</span>
+</div>
+</div>
+<!-- 15:15 - 16:45: OS2: Statistical Learning & High-Dim Geometry (375m offset -> 62.5%, 90m width -> 15%) -->
+<div class="session-card absolute top-2 bottom-2 rounded bg-surface-container text-on-surface p-space-xs flex flex-col justify-between cursor-pointer hover:bg-surface-container-high transition-colors shadow-sm" onclick="inspectSession('os2')" style="left: 62.5%; width: 15%;">
+<div>
+<div class="flex items-center justify-between font-label-sm text-[10px] text-outline mb-0.5">
+<span class="text-primary font-bold">OS2</span>
+<span>15:15 - 16:45</span>
+</div>
+<h5 class="font-headline-md text-label-md font-bold text-on-surface leading-tight truncate">
+                      Statistical Learning &amp; High-Dim Geometry
+                    </h5>
+<p class="font-label-sm text-[10px] text-outline truncate">H. Kasai • T. Okuno • A. Nitanda</p>
+</div>
+<div class="flex items-center justify-between font-label-sm text-[9px] text-outline">
+<span>3 Regular Papers</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+</div>
+</div>
+<!-- 17:00 - 18:30: Free Research Discussion & Working Group (480m offset -> 80%, 90m width -> 15%) -->
+<div class="session-card absolute top-3 bottom-3 rounded bg-surface-container-low text-on-surface-variant p-space-xs flex flex-col justify-between cursor-pointer hover:bg-surface-container transition-colors shadow-sm" onclick="inspectSession('wg1')" style="left: 80%; width: 15%;">
+<div class="font-label-sm text-[9px] text-outline">17:00 - 18:30</div>
+<div class="font-label-sm text-label-sm font-semibold truncate text-on-surface">Working Group: Geometric Deep Learning</div>
+<div class="font-label-sm text-[9px] text-outline">Open Session • Discussion Room A</div>
+</div>
+</div>
+</div>
+<!-- ================= TRACK B ================= -->
+<div class="track-row flex items-stretch min-h-[148px] bg-surface-container-lowest rounded shadow-sm hover:shadow transition-shadow overflow-hidden group">
+<!-- Track Label Sidebar -->
+<div class="w-48 flex-shrink-0 p-space-sm bg-surface-container-low flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-1 mb-1">
+<span class="w-2.5 h-2.5 rounded-sm bg-surface-tint"></span>
+<span class="font-headline-md text-headline-md text-on-surface font-bold">Track B</span>
+</div>
+<div class="font-label-md text-label-md text-on-surface-variant font-medium">International Room (3F)</div>
+<div class="font-label-sm text-label-sm text-outline mt-0.5">Capacity: 350 seats</div>
+</div>
+<div class="flex items-center justify-between text-outline">
+<span class="font-label-sm text-label-sm text-secondary font-semibold flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[14px]">translate</span> EN / JA Sub
+                  </span>
+<span class="font-label-sm text-label-sm bg-surface-container px-1 rounded">Room 301</span>
+</div>
+</div>
+<!-- Track B Timeline Canvas -->
+<div class="flex-1 relative h-full py-1.5 px-0.5">
+<!-- 10:00 - 12:00: Tutorial 2: Deep Generative Diffusion Models (60m offset -> 10%, 120m width -> 20%) -->
+<!-- ACTIVE / ONGOING SESSION -->
+<div class="session-card absolute top-1.5 bottom-1.5 rounded-lg bg-surface-tint text-on-primary p-space-sm flex flex-col justify-between cursor-pointer shadow-md hover:shadow-lg transition-transform hover:-translate-y-0.5 z-20" onclick="inspectSession('tutorial2')" style="left: 10%; width: 20%;">
+<div>
+<div class="flex items-center justify-between mb-1">
+<div class="flex items-center gap-1.5">
+<span class="bg-error text-on-error font-label-sm text-[9px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider animate-pulse">
+                          LIVE
+                        </span>
+<span class="font-label-sm text-label-sm text-inverse-primary font-mono">10:00 - 12:00</span>
+</div>
+<span class="font-label-sm text-[10px] bg-white/20 text-on-primary px-1 rounded">Hands-on</span>
+</div>
+<h4 class="font-headline-md text-label-lg font-bold text-on-primary leading-tight truncate">
+                      Tutorial 2: Deep Generative Diffusion Models
+                    </h4>
+<p class="font-label-sm text-label-sm text-inverse-primary line-clamp-1 mt-0.5">
+                      In Scientific Discovery &amp; Inverse Problems • Y. Song &amp; Team
+                    </p>
+</div>
+<div class="flex items-center justify-between pt-1 font-label-sm text-[10px] text-inverse-primary">
+<span class="flex items-center gap-0.5"><span class="material-symbols-outlined text-[13px]">code</span>Colab Notebooks Ready</span>
+<span class="bg-white/20 px-1.5 py-0.5 rounded text-white font-mono text-[9px]">312 / 350 seats</span>
+</div>
+</div>
+<!-- 12:00 - 13:30: Lunch Break -->
+<div class="absolute top-3 bottom-3 rounded bg-surface-container-low/60 text-outline p-space-xs flex items-center justify-center cursor-default pattern-diagonal" style="left: 30%; width: 15%;">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Lunch Break</span>
+</div>
+<!-- 13:30 - 15:30: OS3: Causal Inference & Representation Learning (270m offset -> 45%, 120m width -> 20%) -->
+<div class="session-card absolute top-2 bottom-2 rounded bg-surface-container text-on-surface p-space-xs flex flex-col justify-between cursor-pointer hover:bg-surface-container-high transition-colors shadow-sm" onclick="inspectSession('os3')" style="left: 45%; width: 20%;">
+<div>
+<div class="flex items-center justify-between font-label-sm text-[10px] text-outline mb-0.5">
+<span class="text-primary font-bold">OS3</span>
+<span>13:30 - 15:30</span>
+</div>
+<h5 class="font-headline-md text-label-md font-bold text-on-surface leading-tight truncate">
+                      Causal Inference &amp; Representation Learning
+                    </h5>
+<p class="font-label-sm text-[10px] text-outline truncate">K. Shimizu • T. Uemura • Y. Kawahara</p>
+</div>
+<div class="flex items-center justify-between font-label-sm text-[9px] text-outline">
+<span>4 Paper Presentations</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+</div>
+</div>
+<!-- 16:00 - 17:30: Panel Discussion: Future of Induction in LLM Era (420m offset -> 70%, 90m width -> 15%) -->
+<div class="session-card absolute top-2 bottom-2 rounded-lg bg-inverse-surface text-inverse-on-surface p-space-sm flex flex-col justify-between cursor-pointer hover:bg-on-background transition-colors shadow-md" onclick="inspectSession('panel1')" style="left: 70%; width: 15%;">
+<div>
+<div class="flex items-center justify-between mb-1">
+<span class="bg-primary px-1.5 py-0.5 rounded font-label-sm text-[9px] font-bold text-on-primary uppercase">
+                        Panel
+                      </span>
+<span class="font-label-sm text-[10px] text-outline-variant font-mono">16:00-17:30</span>
+</div>
+<h5 class="font-headline-md text-label-md font-bold text-inverse-on-surface leading-tight truncate">
+                      The Future of Induction in the Era of LLMs
+                    </h5>
+<p class="font-label-sm text-[10px] text-outline-variant truncate mt-0.5">5 Distinguished Panelists</p>
+</div>
+<div class="flex items-center justify-between font-label-sm text-[9px] text-outline-variant pt-1">
+<span>Interactive Q&amp;A</span>
+<span class="material-symbols-outlined text-[14px] text-tertiary-fixed">forum</span>
+</div>
+</div>
+</div>
+</div>
+<!-- ================= TRACK C ================= -->
+<div class="track-row flex items-stretch min-h-[148px] bg-surface-container-lowest rounded shadow-sm hover:shadow transition-shadow overflow-hidden group">
+<!-- Track Label Sidebar -->
+<div class="w-48 flex-shrink-0 p-space-sm bg-surface-container-low flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-1 mb-1">
+<span class="w-2.5 h-2.5 rounded-sm bg-tertiary"></span>
+<span class="font-headline-md text-headline-md text-on-surface font-bold">Track C</span>
+</div>
+<div class="font-label-md text-label-md text-on-surface-variant font-medium">Civic Gallery (1F)</div>
+<div class="font-label-sm text-label-sm text-outline mt-0.5">Posters &amp; Demo Hall</div>
+</div>
+<div class="flex items-center justify-between text-outline">
+<span class="font-label-sm text-label-sm text-tertiary font-semibold flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[14px]">local_cafe</span> Coffee Station
+                  </span>
+<span class="font-label-sm text-label-sm bg-surface-container px-1 rounded">Gallery 1</span>
+</div>
+</div>
+<!-- Track C Timeline Canvas -->
+<div class="flex-1 relative h-full py-1.5 px-0.5">
+<!-- 12:30 - 14:00: Poster Preview Lightning Talks (210m offset -> 35%, 90m width -> 15%) -->
+<div class="session-card absolute top-2 bottom-2 rounded bg-surface-container text-on-surface p-space-xs flex flex-col justify-between cursor-pointer hover:bg-surface-container-high transition-colors shadow-sm" onclick="inspectSession('lightning1')" style="left: 35%; width: 15%;">
+<div>
+<div class="flex items-center justify-between font-label-sm text-[10px] text-outline mb-0.5">
+<span class="text-tertiary font-bold">Lightning Talks</span>
+<span>12:30 - 14:00</span>
+</div>
+<h5 class="font-headline-md text-label-md font-bold text-on-surface leading-tight truncate">
+                      1-Minute Spotlight Poster Pitches
+                    </h5>
+<p class="font-label-sm text-[10px] text-outline truncate">P1-01 through P1-68 Blitz</p>
+</div>
+<div class="flex items-center justify-between font-label-sm text-[9px] text-outline">
+<span>Rapid Stage</span>
+<span class="material-symbols-outlined text-[14px]">bolt</span>
+</div>
+</div>
+<!-- 16:00 - 19:00: Poster Session 1: Induction Sciences, Kernels & Optimization (420m offset -> 70%, 180m width -> 30%) -->
+<div class="session-card absolute top-1.5 bottom-1.5 rounded-lg bg-tertiary text-on-tertiary p-space-sm flex flex-col justify-between cursor-pointer shadow-md hover:shadow-lg transition-transform hover:-translate-y-0.5" onclick="inspectSession('poster1')" style="left: 70%; width: 30%;">
+<div>
+<div class="flex items-center justify-between mb-1">
+<div class="flex items-center gap-1.5">
+<span class="bg-surface-container-lowest text-tertiary font-label-sm text-[9px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">
+                          Poster Core 1
+                        </span>
+<span class="font-label-sm text-label-sm text-on-tertiary-container font-mono">16:00 - 19:00</span>
+</div>
+<span class="bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-[9px] font-bold px-1.5 py-0.5 rounded">
+                        Beverages &amp; Finger Food
+                      </span>
+</div>
+<h4 class="font-headline-md text-label-lg font-bold text-on-tertiary leading-tight truncate">
+                      Poster Session 1: Induction Sciences, Kernels &amp; Optimization
+                    </h4>
+<p class="font-label-sm text-label-sm text-on-tertiary-container mt-0.5">
+                      68 Dedicated Research Posters • Odd numbers 16:00-17:30, Even numbers 17:30-19:00
+                    </p>
+</div>
+<div class="flex items-center justify-between pt-1 font-label-sm text-[10px] text-on-tertiary-container">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">qr_code_2</span> Instant PDF Abstract Archive
+                    </span>
+<span class="bg-surface-bright/20 px-2 py-0.5 rounded text-white font-semibold">P1-01 ~ P1-68</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Axis Time Legend Marks -->
+<div class="flex items-center bg-surface-container-low rounded-b py-1 px-space-sm text-outline font-label-sm text-label-sm">
+<span class="w-48 flex-shrink-0 font-medium">Timeline Grid Interval: 30m</span>
+<div class="flex-1 flex justify-between px-2">
+<span>09:00</span>
+<span>10:00</span>
+<span>11:00</span>
+<span>12:00</span>
+<span>13:00</span>
+<span>14:00</span>
+<span>15:00</span>
+<span>16:00</span>
+<span>17:00</span>
+<span>18:00</span>
+<span>19:00</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Canvas Action Bar -->
+<div class="mt-space-sm pt-space-xs flex flex-wrap items-center justify-between gap-space-sm text-outline font-label-md text-label-md">
+<div class="flex items-center gap-space-md">
+<span class="flex items-center gap-1 text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-primary">touch_app</span> Drag or scroll horizontally to explore schedule
+          </span>
+<span class="hidden sm:inline text-outline-variant">•</span>
+<button class="text-error font-semibold hover:underline flex items-center gap-1" onclick="scrollToCurrentTime()" type="button">
+<span class="material-symbols-outlined text-[15px]">my_location</span> Jump to Live Now
+          </button>
+</div>
+<div class="flex items-center gap-space-sm">
+<button class="px-space-sm py-1 rounded bg-surface-container hover:bg-surface-container-high text-on-surface font-label-sm text-label-sm transition-colors flex items-center gap-1" type="button">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span> Add Day 2 to iCal (.ics)
+          </button>
+<button class="px-space-sm py-1 rounded bg-surface-container hover:bg-surface-container-high text-on-surface font-label-sm text-label-sm transition-colors flex items-center gap-1" type="button">
+<span class="material-symbols-outlined text-[14px]">share</span> Share Matrix
+          </button>
+</div>
+</div>
+</div>
+<!-- RIGHT: DOCKED SESSION INSPECTION PANEL (3-4 Cols) -->
+<aside class="lg:col-span-4 xl:col-span-3 flex flex-col gap-space-md" id="session-inspector">
+<!-- Primary Active Session Inspector Card -->
+<div class="bg-surface rounded-lg shadow-sm p-space-md flex flex-col gap-space-sm relative overflow-hidden">
+<!-- Ambient Status Strip -->
+<div class="flex items-center justify-between pb-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="w-2.5 h-2.5 rounded-full bg-error animate-ping"></span>
+<span class="font-label-sm text-label-sm text-error font-bold uppercase tracking-wider">Inspect Mode: Active</span>
+</div>
+<span class="px-space-xs py-0.5 rounded bg-primary-fixed text-on-primary-fixed-variant font-label-sm text-label-sm font-bold" id="inspect-tag">Track A • OS1</span>
+</div>
+<!-- Session Title & Times -->
+<div>
+<div class="flex items-baseline justify-between gap-space-xs">
+<span class="font-label-md text-label-md text-primary font-mono font-semibold" id="inspect-time">10:00 - 12:00 JST (120 min)</span>
+<span class="font-label-sm text-label-sm text-outline" id="inspect-room">Main Hall (2F)</span>
+</div>
+<h3 class="font-headline-lg text-headline-lg font-bold text-on-surface leading-tight mt-1" id="inspect-title">
+            Physics and Machine Learning Theory
+          </h3>
+<p class="font-body-sm text-body-sm text-outline mt-1" id="inspect-organizer">
+            Organized by Prof. Masaaki Imaizumi (The University of Tokyo) &amp; Prof. Kenji Fukumizu (ISM)
+          </p>
+</div>
+<!-- Key Action Buttons for the Session -->
+<div class="grid grid-cols-2 gap-space-xs py-space-xs">
+<a class="flex items-center justify-center gap-1.5 bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md py-1.5 px-space-xs rounded shadow-sm transition-colors text-center" href="#slido">
+<span class="material-symbols-outlined text-[16px]">live_help</span> Slido Q&amp;A
+          </a>
+<button class="flex items-center justify-center gap-1.5 bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md py-1.5 px-space-xs rounded transition-colors text-center" type="button">
+<span class="material-symbols-outlined text-[16px] text-secondary">bookmark</span> Bookmark Talk
+          </button>
+</div>
+<!-- Talk Breakdown (Accordion / High-Density List) -->
+<div class="mt-space-xs flex flex-col gap-space-xs">
+<div class="flex items-center justify-between font-label-sm text-label-sm text-outline uppercase tracking-wider">
+<span>Talk Schedule &amp; Preprints</span>
+<span>4 Presenters</span>
+</div>
+<div class="flex flex-col gap-space-xs max-h-[380px] overflow-y-auto pr-1" id="talk-list">
+<!-- Talk 1 (Active) -->
+<div class="p-space-sm rounded bg-surface-container-low shadow-sm transition-colors">
+<div class="flex items-center justify-between font-label-sm text-[10px] text-outline mb-1">
+<span class="font-mono text-error font-bold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span> 10:00 - 10:30 (Current)
+                </span>
+<span class="bg-surface px-1 rounded text-outline font-mono">Talk 1/4</span>
+</div>
+<h5 class="font-headline-md text-body-md font-bold text-on-surface leading-tight">
+                Non-asymptotic Theory of Overparameterized Physical Systems
+              </h5>
+<div class="flex items-center justify-between mt-1 text-outline font-label-sm text-label-sm">
+<span class="text-on-surface-variant font-medium">Masaaki Imaizumi</span>
+<span class="text-[10px]">Univ of Tokyo</span>
+</div>
+<div class="mt-2 pt-1.5 flex items-center justify-between font-label-sm text-[10px]">
+<span class="text-tertiary-container font-mono">arXiv:2604.11982</span>
+<a class="text-primary hover:underline flex items-center gap-0.5" href="#">
+<span class="material-symbols-outlined text-[13px]">download</span> PDF Slides
+                </a>
+</div>
+</div>
+<!-- Talk 2 -->
+<div class="p-space-sm rounded bg-surface-container-lowest shadow-sm hover:bg-surface-container-low transition-colors">
+<div class="flex items-center justify-between font-label-sm text-[10px] text-outline mb-1">
+<span class="font-mono text-on-surface-variant">10:30 - 11:00</span>
+<span class="bg-surface-container px-1 rounded text-outline font-mono">Talk 2/4</span>
+</div>
+<h5 class="font-headline-md text-body-md font-bold text-on-surface leading-tight">
+                Kernel Methods on Infinite-Dimensional Riemannian Manifolds
+              </h5>
+<div class="flex items-center justify-between mt-1 text-outline font-label-sm text-label-sm">
+<span class="text-on-surface-variant font-medium">Kenji Fukumizu</span>
+<span class="text-[10px]">Inst. of Statistical Math.</span>
+</div>
+<div class="mt-2 pt-1.5 flex items-center justify-between font-label-sm text-[10px]">
+<span class="text-outline">Preprint released</span>
+<a class="text-primary hover:underline flex items-center gap-0.5" href="#">
+<span class="material-symbols-outlined text-[13px]">description</span> Abstract
+                </a>
+</div>
+</div>
+<!-- Talk 3 -->
+<div class="p-space-sm rounded bg-surface-container-lowest shadow-sm hover:bg-surface-container-low transition-colors">
+<div class="flex items-center justify-between font-label-sm text-[10px] text-outline mb-1">
+<span class="font-mono text-on-surface-variant">11:00 - 11:30</span>
+<span class="bg-surface-container px-1 rounded text-outline font-mono">Talk 3/4</span>
+</div>
+<h5 class="font-headline-md text-body-md font-bold text-on-surface leading-tight">
+                Generalization Error Bounds for Neural Operator Approximations
+              </h5>
+<div class="flex items-center justify-between mt-1 text-outline font-label-sm text-label-sm">
+<span class="text-on-surface-variant font-medium">Taiji Suzuki</span>
+<span class="text-[10px]">RIKEN AIP / UTokyo</span>
+</div>
+<div class="mt-2 pt-1.5 flex items-center justify-between font-label-sm text-[10px]">
+<span class="text-outline">Code on GitHub</span>
+<a class="text-primary hover:underline flex items-center gap-0.5" href="#">
+<span class="material-symbols-outlined text-[13px]">code</span> PyTorch Repo
+                </a>
+</div>
+</div>
+<!-- Talk 4 -->
+<div class="p-space-sm rounded bg-surface-container-lowest shadow-sm hover:bg-surface-container-low transition-colors">
+<div class="flex items-center justify-between font-label-sm text-[10px] text-outline mb-1">
+<span class="font-mono text-on-surface-variant">11:30 - 12:00</span>
+<span class="bg-surface-container px-1 rounded text-outline font-mono">Talk 4/4</span>
+</div>
+<h5 class="font-headline-md text-body-md font-bold text-on-surface leading-tight">
+                Molecular Simulation with Equivariant Graph Transformers
+              </h5>
+<div class="flex items-center justify-between mt-1 text-outline font-label-sm text-label-sm">
+<span class="text-on-surface-variant font-medium">Shin-ichi Maeda</span>
+<span class="text-[10px]">Preferred Networks</span>
+</div>
+<div class="mt-2 pt-1.5 flex items-center justify-between font-label-sm text-[10px]">
+<span class="text-outline">Industrial Applications</span>
+<a class="text-primary hover:underline flex items-center gap-0.5" href="#">
+<span class="material-symbols-outlined text-[13px]">description</span> Abstract
+                </a>
+</div>
+</div>
+</div>
+</div>
+<!-- Real-Time Slido Q&A Snippet -->
+<div class="bg-surface-container-low rounded p-space-sm mt-space-xs">
+<div class="flex items-center justify-between mb-1">
+<span class="font-label-sm text-label-sm font-bold text-on-surface flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-tertiary">chat</span> Live Audience Feed
+            </span>
+<span class="font-label-sm text-[10px] font-mono text-outline">#IBIS2026-OS1</span>
+</div>
+<div class="text-on-surface-variant font-body-sm text-body-sm italic bg-surface p-space-xs rounded shadow-sm">
+            "Does the rate in Theorem 2 hold under non-Gaussian heavy-tailed initializations?"
+          </div>
+<div class="flex items-center justify-between mt-1.5 font-label-sm text-[10px] text-outline">
+<span>Asked by Dr. Nakamura • 4 upvotes</span>
+<span class="text-primary font-semibold cursor-pointer hover:underline">+ Upvote</span>
+</div>
+</div>
+</div>
+<!-- Quick Stats & Facility Status Bento Box -->
+<div class="bg-surface rounded-lg shadow-sm p-space-md flex flex-col gap-space-xs">
+<h4 class="font-label-md text-label-md font-bold text-on-surface uppercase tracking-wider mb-1">
+          Symposium Hall Telemetry
+        </h4>
+<div class="grid grid-cols-2 gap-space-xs">
+<div class="p-space-xs bg-surface-container-low rounded">
+<div class="font-label-sm text-[10px] text-outline">Main Hall Wi-Fi</div>
+<div class="font-label-md text-label-md font-bold text-tertiary-container flex items-center gap-1 mt-0.5">
+<span class="material-symbols-outlined text-[14px]">wifi</span> 820 Mbps (94%)
+            </div>
+</div>
+<div class="p-space-xs bg-surface-container-low rounded">
+<div class="font-label-sm text-[10px] text-outline">Lunch Service</div>
+<div class="font-label-md text-label-md font-bold text-on-surface flex items-center gap-1 mt-0.5">
+<span class="material-symbols-outlined text-[14px] text-secondary">bento</span> Starts 12:00
+            </div>
+</div>
+</div>
+<div class="mt-1 flex items-center justify-between text-outline font-label-sm text-label-sm pt-1">
+<span>Speaker Ready Room: 4F Room 402</span>
+<span class="text-primary font-medium">Audio Check OK</span>
+</div>
+</div>
+</aside>
+</div>
+</div>
+<!-- CLIENT INTERACTIVITY: TIMELINE SCRUBBER, ZOOM, FILTERING, INSPECTOR STATE -->
+<script>
+  // Session database for interactive inspector panel
+  const sessionData = {
+    os1: {
+      tag: "Track A • OS1",
+      room: "Main Hall (2F)",
+      time: "10:00 - 12:00 JST (120 min)",
+      title: "Physics and Machine Learning Theory",
+      organizer: "Organized by Prof. Masaaki Imaizumi (The University of Tokyo) & Prof. Kenji Fukumizu (ISM)",
+      slido: "#IBIS2026-OS1",
+      talks: [
+        { time: "10:00 - 10:30", active: true, title: "Non-asymptotic Theory of Overparameterized Physical Systems", author: "Masaaki Imaizumi", affil: "Univ of Tokyo", link: "arXiv:2604.11982" },
+        { time: "10:30 - 11:00", active: false, title: "Kernel Methods on Infinite-Dimensional Riemannian Manifolds", author: "Kenji Fukumizu", affil: "Inst. of Statistical Math.", link: "Abstract" },
+        { time: "11:00 - 11:30", active: false, title: "Generalization Error Bounds for Neural Operator Approximations", author: "Taiji Suzuki", affil: "RIKEN AIP / UTokyo", link: "PyTorch Repo" },
+        { time: "11:30 - 12:00", active: false, title: "Molecular Simulation with Equivariant Graph Transformers", author: "Shin-ichi Maeda", affil: "Preferred Networks", link: "Abstract" }
+      ]
+    },
+    keynote1: {
+      tag: "Track A • Invited Keynote 1",
+      room: "Main Hall (2F)",
+      time: "14:00 - 15:00 JST (60 min)",
+      title: "SciML: Scientific Machine Learning and Universal Differential Equations",
+      organizer: "Keynote Speaker: Christopher Rackauckas (MIT) • Session Chair: Prof. Masashi Sugiyama (RIKEN / UTokyo)",
+      slido: "#IBIS2026-KEYNOTE1",
+      talks: [
+        { time: "14:00 - 14:05", active: false, title: "Opening Introduction & Speaker Laudatio", author: "Masashi Sugiyama", affil: "RIKEN AIP", link: "Program" },
+        { time: "14:05 - 14:50", active: false, title: "SciML: Scientific Machine Learning & Diffeq Ecosystem", author: "Christopher Rackauckas", affil: "MIT", link: "Preprint PDF" },
+        { time: "14:50 - 15:00", active: false, title: "Plenary Audience Discussion & Theoretical Remarks", author: "Open Q&A", affil: "Audience Floor", link: "Slido Live" }
+      ]
+    },
+    tutorial2: {
+      tag: "Track B • Tutorial 2",
+      room: "International Room (3F)",
+      time: "10:00 - 12:00 JST (120 min)",
+      title: "Deep Generative Diffusion Models in Scientific Discovery",
+      organizer: "Instructor: Dr. Yang Song & Research Team • Practical Hands-on Track",
+      slido: "#IBIS2026-TUT2",
+      talks: [
+        { time: "10:00 - 10:45", active: false, title: "Stochastic Differential Equations & Score-based Foundations", author: "Yang Song", affil: "Invited Scholar", link: "Slides" },
+        { time: "10:45 - 11:30", active: false, title: "Inverse Problems, Cryo-EM & PDE Inversion with Guided Diffusion", author: "Co-Instructor", affil: "Stanford / DeepMind", link: "Colab" },
+        { time: "11:30 - 12:00", active: false, title: "Interactive Coding: Constrained Conditioning & Sampling", author: "Hands-on Workshop", affil: "Audience Code", link: "GitHub Repo" }
+      ]
+    },
+    poster1: {
+      tag: "Track C • Poster Session 1",
+      room: "Civic Gallery (1F)",
+      time: "16:00 - 19:00 JST (180 min)",
+      title: "Poster Session 1: Induction Sciences, Kernels & Optimization",
+      organizer: "Chaired by IBIS2026 Program Committee • 68 Peer-Reviewed Poster Presentations",
+      slido: "#IBIS2026-POSTER1",
+      talks: [
+        { time: "16:00 - 17:30", active: false, title: "Core Track A: Odd Numbers (P1-01 to P1-67)", author: "34 Presenters", affil: "Stations 01-34", link: "Abstract Archive" },
+        { time: "17:30 - 19:00", active: false, title: "Core Track B: Even Numbers (P1-02 to P1-68)", author: "34 Presenters", affil: "Stations 35-68", link: "Abstract Archive" }
+      ]
+    },
+    os2: {
+      tag: "Track A • OS2",
+      room: "Main Hall (2F)",
+      time: "15:15 - 16:45 JST (90 min)",
+      title: "Statistical Learning & High-Dimensional Geometry",
+      organizer: "Organized by Prof. Hiroyuki Kasai & Prof. Takayuki Okuno",
+      slido: "#IBIS2026-OS2",
+      talks: [
+        { time: "15:15 - 15:45", active: false, title: "Riemannian Optimization for Overparameterized Low-Rank Tensor Recovery", author: "Hiroyuki Kasai", affil: "Waseda Univ", link: "Abstract" },
+        { time: "15:45 - 16:15", active: false, title: "First-Order Algorithms on Non-Convex Stiefel Manifolds", author: "Takayuki Okuno", affil: "ISM", link: "Abstract" },
+        { time: "16:15 - 16:45", active: false, title: "Convex Geometry of Optimal Transport Measures", author: "Atsushi Nitanda", affil: "Kyushu Univ", link: "Preprint" }
+      ]
+    },
+    panel1: {
+      tag: "Track B • Panel 1",
+      room: "International Room (3F)",
+      time: "16:00 - 17:30 JST (90 min)",
+      title: "The Future of Induction in the Era of LLMs",
+      organizer: "Moderated by Prof. Kenji Doya • 5 International Panelists",
+      slido: "#IBIS2026-PANEL",
+      talks: [
+        { time: "16:00 - 16:20", active: false, title: "Position Statements: Is In-Context Learning Real Induction?", author: "All Panelists", affil: "Panel Stage", link: "Position Brief" },
+        { time: "16:20 - 17:15", active: false, title: "Debate: Algorithmic Reasoning vs. Statistical Memorization", author: "Panel Floor", affil: "Open Floor", link: "Slido Feed" },
+        { time: "17:15 - 17:30", active: false, title: "Concluding Perspectives for Mathematical Induction Sciences", author: "Moderator", affil: "IBIS Steering", link: "Summary" }
+      ]
+    }
+  };
+
+  // Inspect session function
+  function inspectSession(key) {
+    const data = sessionData[key];
+    if (!data) return;
+
+    document.getElementById('inspect-tag').textContent = data.tag;
+    document.getElementById('inspect-room').textContent = data.room;
+    document.getElementById('inspect-time').textContent = data.time;
+    document.getElementById('inspect-title').textContent = data.title;
+    document.getElementById('inspect-organizer').textContent = data.organizer;
+
+    // Render talks
+    const list = document.getElementById('talk-list');
+    list.innerHTML = data.talks.map((talk, idx) => `
+      <div class="p-space-sm rounded ${talk.active ? 'bg-surface-container-low shadow-sm' : 'bg-surface-container-lowest shadow-sm hover:bg-surface-container-low'} transition-colors">
+        <div class="flex items-center justify-between font-label-sm text-[10px] text-outline mb-1">
+          <span class="font-mono ${talk.active ? 'text-error font-bold flex items-center gap-1' : 'text-on-surface-variant'}">
+            ${talk.active ? '<span class="w-1.5 h-1.5 rounded-full bg-error"></span>' : ''} ${talk.time}
+          </span>
+          <span class="bg-surface px-1 rounded text-outline font-mono">Talk ${idx + 1}/${data.talks.length}</span>
+        </div>
+        <h5 class="font-headline-md text-body-md font-bold text-on-surface leading-tight">
+          ${talk.title}
+        </h5>
+        <div class="flex items-center justify-between mt-1 text-outline font-label-sm text-label-sm">
+          <span class="text-on-surface-variant font-medium">${talk.author}</span>
+          <span class="text-[10px]">${talk.affil}</span>
+        </div>
+        <div class="mt-2 pt-1.5 flex items-center justify-between font-label-sm text-[10px]">
+          <span class="text-tertiary-container font-mono">${talk.link}</span>
+          <a href="#" class="text-primary hover:underline flex items-center gap-0.5">
+            <span class="material-symbols-outlined text-[13px]">description</span> View Pre-print
+          </a>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Toggle Red Current Time Marker
+  const toggleMarker = document.getElementById('toggle-marker');
+  const liveIndicator = document.getElementById('live-time-indicator');
+  toggleMarker.addEventListener('change', (e) => {
+    liveIndicator.style.display = e.target.checked ? 'block' : 'none';
+  });
+
+  // Time scrubber simulation
+  const timeScrubber = document.getElementById('time-scrubber');
+  const scrubberDisplay = document.getElementById('scrubber-display');
+  const currentTimeLabel = document.getElementById('current-time-label');
+
+  timeScrubber.addEventListener('input', (e) => {
+    const minsFromMidnight = parseInt(e.target.value, 10);
+    const hrs = Math.floor(minsFromMidnight / 60);
+    const mins = minsFromMidnight % 60;
+    const formatted = `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}`;
+    
+    scrubberDisplay.textContent = `${formatted} JST`;
+    currentTimeLabel.textContent = `${formatted} JST`;
+
+    // Map min (09:00 = 540) to max (19:00 = 1140) -> total 600 mins
+    const ratio = (minsFromMidnight - 540) / 600;
+    liveIndicator.style.left = `calc(12rem + (100% - 12rem) * ${ratio})`;
+  });
+
+  // Zoom controls
+  let currentZoom = 100;
+  const ganttCanvas = document.getElementById('gantt-canvas');
+  const zoomLevelDisplay = document.getElementById('zoom-level');
+
+  document.getElementById('zoom-in').addEventListener('click', () => {
+    if (currentZoom < 180) {
+      currentZoom += 20;
+      updateZoom();
+    }
+  });
+
+  document.getElementById('zoom-out').addEventListener('click', () => {
+    if (currentZoom > 80) {
+      currentZoom -= 20;
+      updateZoom();
+    }
+  });
+
+  document.getElementById('zoom-fit').addEventListener('click', () => {
+    currentZoom = 100;
+    updateZoom();
+  });
+
+  function updateZoom() {
+    zoomLevelDisplay.textContent = `${currentZoom}%`;
+    const minW = Math.round(1250 * (currentZoom / 100));
+    ganttCanvas.style.minWidth = `${minW}px`;
+  }
+
+  // Quick jump to current time
+  function scrollToCurrentTime() {
+    const container = document.getElementById('timeline-scroll-container');
+    const indicator = document.getElementById('live-time-indicator');
+    if (container && indicator) {
+      const scrollPos = indicator.offsetLeft - 300;
+      container.scrollTo({ left: Math.max(0, scrollPos), behavior: 'smooth' });
+    }
+  }
+
+  // Filter chips micro-interaction
+  const filterChips = document.querySelectorAll('.filter-chip');
+  filterChips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      filterChips.forEach(c => {
+        c.classList.remove('bg-primary', 'text-on-primary');
+        c.classList.add('bg-surface', 'text-on-surface');
+      });
+      chip.classList.add('bg-primary', 'text-on-primary');
+      chip.classList.remove('bg-surface', 'text-on-surface');
+    });
+  });
+</script></main><footer class="w-full bg-surface-container-low text-on-surface-variant py-space-lg shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="w-full max-w-[1600px] mx-auto px-margin flex flex-col md:flex-row items-center justify-between gap-gutter"><div class="flex flex-col sm:flex-row items-center gap-space-md"><span class="font-headline-md text-on-surface font-bold text-headline-md">IBIS2026</span><span class="font-body-sm text-body-sm text-outline">The 29th Information-Based Induction Sciences Workshop</span></div><div class="flex items-center gap-space-lg font-label-md text-label-md"><span class="text-outline">Venue: Sonic City Hall (Omiya, Saitama)</span><span class="text-outline">Organized by IBISML Steering Committee</span></div></div></footer></body></html>
