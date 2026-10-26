@@ -5,7 +5,7 @@
 import pytest
 
 from domain.models import Session, Speaker, Talk, Track
-from domain.policies import CategoryVisualPolicy, FilterPolicy, TimePolicy
+from domain.policies import CategoryVisualPolicy, DayPolicy, FilterPolicy, TimePolicy
 
 
 def test_time_policy_conversion():
@@ -186,3 +186,21 @@ def test_filter_policy_combined(sample_sessions):
     # Day 2 だが category="tutorial" -> ヒットなし
     res_empty = FilterPolicy.apply(sample_sessions, day="Day 2", category="tutorial")
     assert len(res_empty) == 0
+
+
+DAYS = [
+    {"date": "2026-10-26", "label": "Day 1: Oct 26 (Mon)"},
+    {"date": "2026-10-27", "label": "Day 2: Oct 27 (Tue)"},
+]
+
+
+def test_day_policy_default_day():
+    assert DayPolicy.default_day(DAYS, "2026-10-26") == "2026-10-26"
+    # 会期外は Day 2 にフォールバック
+    assert DayPolicy.default_day(DAYS, "2026-12-01") == "2026-10-27"
+
+
+def test_day_policy_labels():
+    assert DayPolicy.badge_label(DAYS, "2026-10-27") == "Day 2"
+    assert DayPolicy.badge_label(DAYS, "2099-01-01") == "Live"
+    assert DayPolicy.tab_label("Day 2: Oct 27 (Tue)") == "Day 2 Oct 27"

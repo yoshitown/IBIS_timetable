@@ -130,6 +130,12 @@ streamlit run app.py
 ```
 起動後、ブラウザで `http://localhost:8501` にアクセスしてください。
 
+タイムラインは実際の現在時刻 (JST) を基準に「進行中」を判定し、1分ごとに自動更新されます。
+デバッグ・リハーサル用に時刻を固定したい場合は環境変数 `IBIS_DEBUG_NOW`（`YYYY-MM-DD HH:MM` または `HH:MM`）を指定します。
+```bash
+IBIS_DEBUG_NOW="2026-10-27 11:20" streamlit run app.py
+```
+
 ---
 
 ## 6. 使い方の詳細

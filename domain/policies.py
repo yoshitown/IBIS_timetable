@@ -24,6 +24,29 @@ class TimePolicy:
         return f"{hours:02d}:{mins:02d}"
 
 
+class DayPolicy:
+    """日程タブに関するビジネスルール"""
+
+    FALLBACK_DAY = "2026-10-27"  # 会期外アクセス時の既定日: Day 2
+
+    @staticmethod
+    def default_day(days: list[dict[str, str]], today: str) -> str:
+        """会期中ならその日、会期外は Day 2 を既定とする"""
+        return today if any(d["date"] == today for d in days) else DayPolicy.FALLBACK_DAY
+
+    @staticmethod
+    def badge_label(days: list[dict[str, str]], date: str) -> str:
+        """ヘッダー用の 'Day N' ラベル (不明な日付は 'Live')"""
+        label = next((d["label"] for d in days if d["date"] == date), "")
+        return label.split(":")[0] or "Live"
+
+    @staticmethod
+    def tab_label(label: str) -> str:
+        """'Day 2: Oct 27 (Tue)' -> 'Day 2 Oct 27'"""
+        day, _, rest = label.partition(":")
+        return f"{day} {rest.split('(')[0].strip()}"
+
+
 class CategoryVisualPolicy:
     """Stitchデザインシステムに準拠したセッションカテゴリのビジュアル仕様"""
 
