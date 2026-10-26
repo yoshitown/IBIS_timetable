@@ -2,10 +2,12 @@
 ドメインポリシー層 (TimePolicy, CategoryVisualPolicy, FilterPolicy) の単体テスト
 """
 
+from datetime import datetime, timezone
+
 import pytest
 
 from domain.models import Session, Speaker, Talk, Track
-from domain.policies import CategoryVisualPolicy, FilterPolicy, TimePolicy
+from domain.policies import JST, CategoryVisualPolicy, FilterPolicy, TimePolicy
 
 
 def test_time_policy_conversion():
@@ -25,6 +27,36 @@ def test_time_policy_conversion():
     assert TimePolicy.time_str_to_minutes("15") == 900
     # 前後空白
     assert TimePolicy.time_str_to_minutes(" 10:30 ") == 630
+
+def test_now_jst_converts_utc_to_jst():
+    """UTC の時刻が JST (+9h) に変換され、日付跨ぎも正しく扱われる"""
+    utc = datetime(2026, 10, 26, 20, 30, tzinfo=timezone.utc)
+    jst = TimePolicy.now_jst(utc)
+    assert (jst.day, jst.hour, jst.minute) == (27, 5, 30)
+    assert TimePolicy.datetime_to_minutes(jst) == 5 * 60 + 30
+
+
+def test_now_jst_treats_naive_as_jst():
+    naive = datetime(2026, 10, 27, 11, 20)
+    assert TimePolicy.now_jst(naive).tzinfo == JST
+
+
+def test_parse_debug_now_with_date():
+    parsed = TimePolicy.parse_debug_now("2026-10-27 11:20")
+    assert parsed == datetime(2026, 10, 27, 11, 20, tzinfo=JST)
+    assert TimePolicy.datetime_to_minutes(parsed) == 680
+
+
+def test_parse_debug_now_time_only_uses_base_date():
+    base = datetime(2026, 10, 28, 3, 0, tzinfo=JST)
+    parsed = TimePolicy.parse_debug_now(" 11:20 ", base=base)
+    assert parsed == datetime(2026, 10, 28, 11, 20, tzinfo=JST)
+
+
+@pytest.mark.parametrize("value", [None, "", "   ", "abc", "25:00", "2026-13-01 10:00"])
+def test_parse_debug_now_invalid_returns_none(value):
+    assert TimePolicy.parse_debug_now(value) is None
+
 
 
 def test_category_visual_policy_all_palette_keys():

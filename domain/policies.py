@@ -2,11 +2,53 @@
 ドメインポリシー層: 時刻計算、フィルタリング規則、カテゴリカラーマッピング等のビジネスルール
 """
 
+from datetime import datetime
+from typing import Optional
+from zoneinfo import ZoneInfo
+
 from domain.models import Session
+
+JST = ZoneInfo("Asia/Tokyo")
 
 
 class TimePolicy:
     """時刻に関するビジネスルール"""
+
+    @staticmethod
+    def now_jst(now: Optional[datetime] = None) -> datetime:
+        """現在時刻を JST で返す（now 指定時はテスト用に JST へ変換）"""
+        if now is None:
+            return datetime.now(JST)
+        if now.tzinfo is None:
+            return now.replace(tzinfo=JST)
+        return now.astimezone(JST)
+
+    @staticmethod
+    def parse_debug_now(value: Optional[str], base: Optional[datetime] = None) -> Optional[datetime]:
+        """
+        デバッグ用の時刻指定を解釈する。
+
+        'YYYY-MM-DD HH:MM' は日付込み、'HH:MM' は base（既定: 実際の今日）の日付で解釈。
+        未設定・不正値は None（呼び出し側で実時刻にフォールバック）。
+        """
+        if not value or not value.strip():
+            return None
+        text = value.strip()
+        try:
+            return datetime.strptime(text, "%Y-%m-%d %H:%M").replace(tzinfo=JST)
+        except ValueError:
+            pass
+        try:
+            parsed = datetime.strptime(text, "%H:%M")
+        except ValueError:
+            return None
+        today = TimePolicy.now_jst(base)
+        return today.replace(hour=parsed.hour, minute=parsed.minute, second=0, microsecond=0)
+
+    @staticmethod
+    def datetime_to_minutes(dt: datetime) -> int:
+        """datetime -> 0時からの通算分"""
+        return dt.hour * 60 + dt.minute
 
     @staticmethod
     def time_str_to_minutes(time_str: str) -> int:
