@@ -2,53 +2,11 @@
 ドメインポリシー層: 時刻計算、フィルタリング規則、カテゴリカラーマッピング等のビジネスルール
 """
 
-from datetime import datetime
-from typing import Optional
-from zoneinfo import ZoneInfo
-
 from domain.models import Session
-
-JST = ZoneInfo("Asia/Tokyo")
 
 
 class TimePolicy:
     """時刻に関するビジネスルール"""
-
-    @staticmethod
-    def now_jst(now: Optional[datetime] = None) -> datetime:
-        """現在時刻を JST で返す（now 指定時はテスト用に JST へ変換）"""
-        if now is None:
-            return datetime.now(JST)
-        if now.tzinfo is None:
-            return now.replace(tzinfo=JST)
-        return now.astimezone(JST)
-
-    @staticmethod
-    def parse_debug_now(value: Optional[str], base: Optional[datetime] = None) -> Optional[datetime]:
-        """
-        デバッグ用の時刻指定を解釈する。
-
-        'YYYY-MM-DD HH:MM' は日付込み、'HH:MM' は base（既定: 実際の今日）の日付で解釈。
-        未設定・不正値は None（呼び出し側で実時刻にフォールバック）。
-        """
-        if not value or not value.strip():
-            return None
-        text = value.strip()
-        try:
-            return datetime.strptime(text, "%Y-%m-%d %H:%M").replace(tzinfo=JST)
-        except ValueError:
-            pass
-        try:
-            parsed = datetime.strptime(text, "%H:%M")
-        except ValueError:
-            return None
-        today = TimePolicy.now_jst(base)
-        return today.replace(hour=parsed.hour, minute=parsed.minute, second=0, microsecond=0)
-
-    @staticmethod
-    def datetime_to_minutes(dt: datetime) -> int:
-        """datetime -> 0時からの通算分"""
-        return dt.hour * 60 + dt.minute
 
     @staticmethod
     def time_str_to_minutes(time_str: str) -> int:
@@ -64,6 +22,29 @@ class TimePolicy:
         hours = minutes // 60
         mins = minutes % 60
         return f"{hours:02d}:{mins:02d}"
+
+
+class DayPolicy:
+    """日程タブに関するビジネスルール"""
+
+    FALLBACK_DAY = "2026-10-27"  # 会期外アクセス時の既定日: Day 2
+
+    @staticmethod
+    def default_day(days: list[dict[str, str]], today: str) -> str:
+        """会期中ならその日、会期外は Day 2 を既定とする"""
+        return today if any(d["date"] == today for d in days) else DayPolicy.FALLBACK_DAY
+
+    @staticmethod
+    def badge_label(days: list[dict[str, str]], date: str) -> str:
+        """ヘッダー用の 'Day N' ラベル (不明な日付は 'Live')"""
+        label = next((d["label"] for d in days if d["date"] == date), "")
+        return label.split(":")[0] or "Live"
+
+    @staticmethod
+    def tab_label(label: str) -> str:
+        """'Day 2: Oct 27 (Tue)' -> 'Day 2 Oct 27'"""
+        day, _, rest = label.partition(":")
+        return f"{day} {rest.split('(')[0].strip()}"
 
 
 class CategoryVisualPolicy:

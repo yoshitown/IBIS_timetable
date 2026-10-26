@@ -2,12 +2,10 @@
 ドメインポリシー層 (TimePolicy, CategoryVisualPolicy, FilterPolicy) の単体テスト
 """
 
-from datetime import datetime, timezone
-
 import pytest
 
 from domain.models import Session, Speaker, Talk, Track
-from domain.policies import JST, CategoryVisualPolicy, FilterPolicy, TimePolicy
+from domain.policies import CategoryVisualPolicy, DayPolicy, FilterPolicy, TimePolicy
 
 
 def test_time_policy_conversion():
@@ -27,36 +25,6 @@ def test_time_policy_conversion():
     assert TimePolicy.time_str_to_minutes("15") == 900
     # 前後空白
     assert TimePolicy.time_str_to_minutes(" 10:30 ") == 630
-
-def test_now_jst_converts_utc_to_jst():
-    """UTC の時刻が JST (+9h) に変換され、日付跨ぎも正しく扱われる"""
-    utc = datetime(2026, 10, 26, 20, 30, tzinfo=timezone.utc)
-    jst = TimePolicy.now_jst(utc)
-    assert (jst.day, jst.hour, jst.minute) == (27, 5, 30)
-    assert TimePolicy.datetime_to_minutes(jst) == 5 * 60 + 30
-
-
-def test_now_jst_treats_naive_as_jst():
-    naive = datetime(2026, 10, 27, 11, 20)
-    assert TimePolicy.now_jst(naive).tzinfo == JST
-
-
-def test_parse_debug_now_with_date():
-    parsed = TimePolicy.parse_debug_now("2026-10-27 11:20")
-    assert parsed == datetime(2026, 10, 27, 11, 20, tzinfo=JST)
-    assert TimePolicy.datetime_to_minutes(parsed) == 680
-
-
-def test_parse_debug_now_time_only_uses_base_date():
-    base = datetime(2026, 10, 28, 3, 0, tzinfo=JST)
-    parsed = TimePolicy.parse_debug_now(" 11:20 ", base=base)
-    assert parsed == datetime(2026, 10, 28, 11, 20, tzinfo=JST)
-
-
-@pytest.mark.parametrize("value", [None, "", "   ", "abc", "25:00", "2026-13-01 10:00"])
-def test_parse_debug_now_invalid_returns_none(value):
-    assert TimePolicy.parse_debug_now(value) is None
-
 
 
 def test_category_visual_policy_all_palette_keys():
@@ -218,3 +186,21 @@ def test_filter_policy_combined(sample_sessions):
     # Day 2 だが category="tutorial" -> ヒットなし
     res_empty = FilterPolicy.apply(sample_sessions, day="Day 2", category="tutorial")
     assert len(res_empty) == 0
+
+
+DAYS = [
+    {"date": "2026-10-26", "label": "Day 1: Oct 26 (Mon)"},
+    {"date": "2026-10-27", "label": "Day 2: Oct 27 (Tue)"},
+]
+
+
+def test_day_policy_default_day():
+    assert DayPolicy.default_day(DAYS, "2026-10-26") == "2026-10-26"
+    # 会期外は Day 2 にフォールバック
+    assert DayPolicy.default_day(DAYS, "2026-12-01") == "2026-10-27"
+
+
+def test_day_policy_labels():
+    assert DayPolicy.badge_label(DAYS, "2026-10-27") == "Day 2"
+    assert DayPolicy.badge_label(DAYS, "2099-01-01") == "Live"
+    assert DayPolicy.tab_label("Day 2: Oct 27 (Tue)") == "Day 2 Oct 27"

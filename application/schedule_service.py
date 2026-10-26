@@ -5,6 +5,7 @@
 
 from typing import Dict, List, Optional
 
+from domain.live import ActiveLive, LiveContext
 from domain.models import (
     DaySchedule,
     RoomGuide,
@@ -148,11 +149,11 @@ class ScheduleService:
 
     def get_ongoing_session(self, date: str, current_minutes: int) -> Optional[Session]:
         """指定日の指定時刻（分）において現在進行中の代表セッションを取得"""
-        schedule = self.get_day_schedule(date=date)
-        ongoing_block = schedule.ongoing_block(current_minutes)
-        if ongoing_block and ongoing_block.sessions:
-            return ongoing_block.sessions[0]
-        return None
+        return self.get_live_session(date=date, live=ActiveLive(current_minutes))
+
+    def get_live_session(self, date: str, live: LiveContext) -> Optional[Session]:
+        """ライブ文脈に基づき、指定日の進行中セッションを取得 (非ライブ日は None)"""
+        return live.ongoing_session(self.get_day_schedule(date=date))
 
     def get_venue_guide(self) -> VenueGuide:
         """会場全体・フロアマップ情報の取得"""

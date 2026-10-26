@@ -4,31 +4,27 @@ Streamlit ネイティブ描画により、iframe隔離を解消し即時画面�
 """
 
 import textwrap
-from typing import Optional
 
 import streamlit as st
 
-from domain.models import DaySchedule, Session
-from domain.policies import CategoryVisualPolicy, TimePolicy
+from domain.live import LiveContext
+from domain.models import DaySchedule
+from domain.policies import CategoryVisualPolicy
 
 
-def render_mobile_timeline(
-    schedule: DaySchedule,
-    current_minutes: Optional[int],
-    ongoing_session: Optional[Session] = None,
-):
+def render_mobile_timeline(schedule: DaySchedule, live: LiveContext):
     """
     ドメイン層で整列済みの DaySchedule を受け取り、並行3トラックを垂直タイムラインとして描画
 
-    current_minutes が None の場合は「表示中の日が今日ではない」ものとして、
-    現在時刻バー・LIVEバッジ・進行中バナーを一切表示しない。
+    live は表示中の日のライブ文脈。今日以外の日は NoLive が渡され、
+    現在時刻バー・LIVEバッジ・進行中バナーは自然に表示されない。
     """
     if not schedule.time_blocks:
         st.info("該当するセッションが見つかりませんでした。検索条件を変更してください。")
         return
 
-    is_live = current_minutes is not None
-    current_time_str = TimePolicy.minutes_to_time_str(current_minutes) if is_live else ""
+    current_time_str = live.label
+    ongoing_session = live.ongoing_session(schedule)
 
     # タイムライン共通カスタムスタイル (インデント除去)
     st.markdown(
@@ -130,7 +126,7 @@ def render_mobile_timeline(
     )
 
     # 進行中セッションのサマリ通知（存在する場合）
-    if is_live and ongoing_session:
+    if ongoing_session:
         st.markdown(
             textwrap.dedent(
                 f"""
@@ -150,7 +146,7 @@ def render_mobile_timeline(
 
     for block in schedule.time_blocks:
         # 現在時刻レーザーインジケータ（該当ブロックの直前に挿入）
-        if is_live and not marker_placed and current_minutes <= block.end_minutes:
+        if not marker_placed and live.marker_precedes(block):
             st.markdown(
                 textwrap.dedent(
                     f"""
@@ -186,13 +182,13 @@ def render_mobile_timeline(
 
         # ブロック内のセッション一覧 (Track A → Track B → Track C 順)
         for s in block.sessions:
-            is_session_ongoing = is_live and s.is_ongoing(current_minutes)
+            is_session_ongoing = live.is_ongoing(s)
             style = CategoryVisualPolicy.get_style(s.category)
             accent_hex = style["accent_hex"]
 
             # ステータスバッジ
             if is_session_ongoing:
-                remaining_mins = max(0, s.end_minutes - current_minutes)
+                remaining_mins = live.remaining_minutes(s)
                 status_badge = f'<span style="background: #fef2f2; color: #b91c1c; font-size: 11px; font-weight: 700; padding: 2px 6px; border-radius: 4px; border: 1px solid #f87171;">● LIVE (残{remaining_mins}分)</span>'
             else:
                 status_badge = f'<span style="background: #f1f5f9; color: #475569; font-size: 11px; font-weight: 600; padding: 2px 6px; border-radius: 4px;">{style["label"]}</span>'
