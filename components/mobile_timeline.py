@@ -14,17 +14,21 @@ from domain.policies import CategoryVisualPolicy, TimePolicy
 
 def render_mobile_timeline(
     schedule: DaySchedule,
-    current_minutes: int,
+    current_minutes: Optional[int],
     ongoing_session: Optional[Session] = None,
 ):
     """
     ドメイン層で整列済みの DaySchedule を受け取り、並行3トラックを垂直タイムラインとして描画
+
+    current_minutes が None の場合は「表示中の日が今日ではない」ものとして、
+    現在時刻バー・LIVEバッジ・進行中バナーを一切表示しない。
     """
     if not schedule.time_blocks:
         st.info("該当するセッションが見つかりませんでした。検索条件を変更してください。")
         return
 
-    current_time_str = TimePolicy.minutes_to_time_str(current_minutes)
+    is_live = current_minutes is not None
+    current_time_str = TimePolicy.minutes_to_time_str(current_minutes) if is_live else ""
 
     # タイムライン共通カスタムスタイル (インデント除去)
     st.markdown(
@@ -126,7 +130,7 @@ def render_mobile_timeline(
     )
 
     # 進行中セッションのサマリ通知（存在する場合）
-    if ongoing_session:
+    if is_live and ongoing_session:
         st.markdown(
             textwrap.dedent(
                 f"""
@@ -146,7 +150,7 @@ def render_mobile_timeline(
 
     for block in schedule.time_blocks:
         # 現在時刻レーザーインジケータ（該当ブロックの直前に挿入）
-        if not marker_placed and current_minutes <= block.end_minutes:
+        if is_live and not marker_placed and current_minutes <= block.end_minutes:
             st.markdown(
                 textwrap.dedent(
                     f"""
@@ -182,7 +186,7 @@ def render_mobile_timeline(
 
         # ブロック内のセッション一覧 (Track A → Track B → Track C 順)
         for s in block.sessions:
-            is_session_ongoing = s.is_ongoing(current_minutes)
+            is_session_ongoing = is_live and s.is_ongoing(current_minutes)
             style = CategoryVisualPolicy.get_style(s.category)
             accent_hex = style["accent_hex"]
 

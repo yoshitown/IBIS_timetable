@@ -183,19 +183,25 @@ else:
     def render_timeline(date: str, keyword: str | None) -> None:
         """1分ごとに現在時刻を取り直してタイムライン部のみ再描画"""
         now, is_debug = resolve_now()
-        current_minutes = TimePolicy.datetime_to_minutes(now)
+        # ライブ表示は「表示中の日 = 現在日付」のときだけ (他の日は None で非表示)
+        is_today = date == now.strftime("%Y-%m-%d")
+        live_minutes = TimePolicy.datetime_to_minutes(now) if is_today else None
 
         if is_debug:
             st.caption(f"⚠ デバッグ時刻: {now.strftime('%Y-%m-%d %H:%M')} JST")
 
         # アプリケーション層から特定日のスケジュール (DaySchedule: ファーストクラスコレクション) を取得
         schedule = service.get_day_schedule(date=date, keyword=keyword)
-        ongoing_session = service.get_ongoing_session(date=date, current_minutes=current_minutes)
+        ongoing_session = (
+            service.get_ongoing_session(date=date, current_minutes=live_minutes)
+            if live_minutes is not None
+            else None
+        )
 
         # 並行3トラック統合 垂直タイムラインのレンダリング
         render_mobile_timeline(
             schedule=schedule,
-            current_minutes=current_minutes,
+            current_minutes=live_minutes,
             ongoing_session=ongoing_session,
         )
 
